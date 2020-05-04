@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Corovany.logic
 {
-    public class Characters
+    public class CharacterCore
     {
         private const double LvlFactor = 0.66;
         public class CharacterClass
@@ -26,7 +26,7 @@ namespace Corovany.logic
                 Perks = perks;
             }
         }
-        public class PlayerChar
+        public class Character
         {
             public string Name { get; private set; }
             public CharacterClass CharClass { get; set; } 
@@ -35,12 +35,22 @@ namespace Corovany.logic
             public int HealthPoints { get; set; }
             public int MoralePoints { get; set; }
             public int SpecialPoints { get; set; }
+            public GameCore.Player Owner { get; set; }
 
-            public PlayerChar(string name, CharacterClass charClass, int level)
+            public Character(string name, CharacterClass charClass, int level)
             {
                 Name = name;
                 CharClass = charClass;
                 Level = level;
+                UpdateLvl();
+            }
+            
+            public Character(string name, CharacterClass charClass, int level, GameCore.Player owner)
+            {
+                Name = name;
+                CharClass = charClass;
+                Level = level;
+                Owner = owner;
                 UpdateLvl();
             }
 

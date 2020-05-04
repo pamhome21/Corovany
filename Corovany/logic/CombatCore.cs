@@ -52,7 +52,7 @@ namespace Corovany.logic
                     State = UnitState.Escaped;
             }
 
-            public PlayerCombatUnit(Characters.PlayerChar character)
+            public PlayerCombatUnit(CharacterCore.Character character)
             {
                 MaxHealthPoints = character.HealthPoints;
                 HealthPoints = MaxHealthPoints;
