@@ -13,10 +13,10 @@ namespace Corovany.logic
             public int MoralePoints { get; }
             public int SpecialPoints { get; }
             public int Initiative { get; }
-            public Dictionary<string, Action<CombatCore.ICombatUnit>> Perks { get; }
+            public List<Perk> Perks { get; }
 
             public CharacterClass(string name, int hp, int mp, int sp, int initiative,
-                Dictionary<string, Action<CombatCore.ICombatUnit>> perks)
+                List<Perk> perks)
             {
                 Name = name;
                 HealthPoints = hp;
@@ -28,9 +28,9 @@ namespace Corovany.logic
         }
         public class Character
         {
-            public string Name { get; private set; }
+            public string Name { get; private set; } = "Noname";
             public CharacterClass CharClass { get; set; } 
-            public int Level { get; set; }
+            public int Level { get; private set; }
             public int Initiative { get; set; }
             public int HealthPoints { get; set; }
             public int MoralePoints { get; set; }
@@ -39,17 +39,17 @@ namespace Corovany.logic
 
             public Character(string name, CharacterClass charClass, int level)
             {
-                Name = name;
+                Rename(name);
                 CharClass = charClass;
-                Level = level;
+                Level = SetLevel(level);
                 UpdateLvl();
             }
             
             public Character(string name, CharacterClass charClass, int level, GameCore.Player owner)
             {
-                Name = name;
+                Rename(name);
                 CharClass = charClass;
-                Level = level;
+                Level = SetLevel(level);
                 Owner = owner;
                 UpdateLvl();
             }
@@ -60,6 +60,16 @@ namespace Corovany.logic
                     Name = newName;
             }
 
+            private int SetLevel(int level)
+            {
+                return level < 1 ? 1 : level;
+            }
+
+            public void LevelUp()
+            {
+                Level++;
+            }
+
             public void UpdateLvl()
             {
                 var isNotFirstLvl = Level > 1;
@@ -67,6 +77,24 @@ namespace Corovany.logic
                 HealthPoints = isNotFirstLvl ? (int)(CharClass.HealthPoints * Level * LvlFactor) : CharClass.HealthPoints;
                 MoralePoints = isNotFirstLvl ? (int)(CharClass.MoralePoints * Level * LvlFactor) : CharClass.MoralePoints;
                 SpecialPoints = isNotFirstLvl ? (int)(CharClass.SpecialPoints * Level * LvlFactor) : CharClass.SpecialPoints;
+            }
+        }
+
+        public class Perk
+        {
+            public string Name { get; }
+            public int Cost { get; }
+            public int Cooldown { get; }
+            public int LevelToUnlock { get; }
+            public Action<CombatCore.ICombatUnitPattern> Ability { get; }
+
+            public Perk(string name, int cost, int cd, int lvlToUnlock, Action<CombatCore.ICombatUnitPattern> ability)
+            {
+                Name = name;
+                Cost = cost;
+                Cooldown = cd;
+                LevelToUnlock = lvlToUnlock;
+                Ability = ability;
             }
         }
     }
