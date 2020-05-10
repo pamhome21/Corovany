@@ -40,9 +40,7 @@ namespace Corovany.logic
             public Dictionary<string, Player> Players { get; set; }
             public List<Enemy> Enemies { get; set; }
             public List<CombatCore.PlayerCombatUnit> Units { get; set; }
-            public Queue<CombatCore.PlayerCombatUnit> Queue { get; set; }
-            public int PlayerUnitCounter { get;  set; }
-            public int EnemyUnitCounter { get; set; }
+            public Queue<CombatCore.PlayerCombatUnit> UnitTurnQueue { get; set; }
             public Action<string> ReportInfo { get; set; }
 
             public Game(Action<string> reportInfo)
@@ -50,7 +48,7 @@ namespace Corovany.logic
                 Players = new Dictionary<string, Player>();
                 Enemies = new List<Enemy>();
                 Units = new List<CombatCore.PlayerCombatUnit>();
-                Queue = new Queue<CombatCore.PlayerCombatUnit>();
+                UnitTurnQueue = new Queue<CombatCore.PlayerCombatUnit>();
                 ReportInfo = reportInfo;
             }
         }

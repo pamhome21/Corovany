@@ -18,7 +18,7 @@ namespace Corovany.logic
             public int SpecialPoints { get; }
             public int Initiative { get; set; }
             public UnitState State { get; }
-            public Dictionary<CharacterCore.Perk, int> Cooldown { get; set; }
+            public Dictionary<CharacterCore.Perk, int> Cooldown { get; }
             public void ApplyHpDamage(int dmg);
             public void ApplyMpDamage(int dmg);
             public void HealHp(int hp);
@@ -33,7 +33,7 @@ namespace Corovany.logic
             public int SpecialPoints { get; private set; }
             public int Initiative { get; set; }
             public UnitState State { get; private set; }
-            public Dictionary<CharacterCore.Perk, int> Cooldown { get; set; }
+            public Dictionary<CharacterCore.Perk, int> Cooldown { get; } = new Dictionary<CharacterCore.Perk, int>();
 
             public void ApplyHpDamage(int dmg)
             {

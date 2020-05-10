@@ -14,17 +14,17 @@ namespace Corovany
     {
         private static Dictionary<string, Type> _commandTypes = new Dictionary<string, Type>()
         {
-            {"InitializeGameCommand", typeof(CoreEventHandler.InitializeGameCommand)}
+            {"InitializeGameCommand", typeof(InitializeGameCommand)}
         };
 
-        private readonly CoreEventHandler.GameLogicHandler _game;
+        private readonly GameLogicHandler _game;
         private readonly IHubContext<CommandHub> _hub;
 
         public GameController(IHubContext<CommandHub> hub)
         {
             Console.WriteLine("Started game controller");
             _hub = hub;
-            _game = new CoreEventHandler.GameLogicHandler(HandleData);
+            _game = new GameLogicHandler(HandleData);
         }
 
         public void HandleCommand(string command)
@@ -35,7 +35,7 @@ namespace Corovany
                 var commandStore = JsonConvert.DeserializeObject<CommandStore>(command);
                 if (!_commandTypes.ContainsKey(commandStore.Type)) throw new DataException();
                 var commandInstance =
-                    (CoreEventHandler.ICommand) Activator.CreateInstance(_commandTypes[commandStore.Type], commandStore.Args);
+                    (ICommand) Activator.CreateInstance(_commandTypes[commandStore.Type], commandStore.Args);
                 _game.ExecuteLogicEventCommand(commandInstance);
             }
             catch (JsonException)
