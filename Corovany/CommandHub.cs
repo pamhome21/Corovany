@@ -13,7 +13,7 @@ namespace Corovany
         }
         public async Task NewCommand(string command)
         {
-            await Console.Out.WriteLineAsync(command);
+            _controller.HandleCommand(command);
         }
     }
 }

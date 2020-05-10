@@ -3,7 +3,7 @@ import * as signalR from '@microsoft/signalr';
 const connection = new signalR.HubConnectionBuilder().withUrl('/hub').build();
 
 connection.on('newCommand', (command: string) => {
-    console.log();
+    console.log(command);
 });
 
 const connectionPromise = connection.start().catch(err => console.log(err));

@@ -7,8 +7,14 @@ import {ExecuteCommand} from "../store/actions";
 export function BattleView(props: any){
     const commands = useSelector(getCommands);
     const dispatch = useDispatch();
+    const executeInitState = () => {
+        dispatch(ExecuteCommand({
+            Type: 'InitializeGameCommand',
+            Args: [],
+        }))
+    }
     return <div>
-        <button onClick={() => dispatch(ExecuteCommand())}>Execute init state</button>
+        <button onClick={executeInitState}>Execute init state</button>
         {commands.map(command => <p>{command}</p>)}
     </div>
 }

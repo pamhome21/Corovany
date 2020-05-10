@@ -5,8 +5,14 @@ export interface Action {
     payload?: any
 }
 
-export const ExecuteCommand: () => Action = () => ({
+interface Command {
+    Type: string,
+    Args: string[]
+}
+
+export const ExecuteCommand: (payload: Command) => Action = (payload: Command) => ({
     type: ActionType.ExecuteCommand,
+    payload
 })
 
 export const AddCommand: (command: string) => Action = (command: string) => ({
