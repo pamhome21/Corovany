@@ -6,9 +6,14 @@ namespace Corovany
 {
     public class CommandHub : Hub
     {
+        private GameController _controller;
+        public CommandHub(GameController controller)
+        {
+            _controller = controller;
+        }
         public async Task NewCommand(string command)
         {
-            Console.WriteLine(command);
+            await Console.Out.WriteLineAsync(command);
         }
     }
 }

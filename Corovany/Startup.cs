@@ -30,7 +30,6 @@ namespace Corovany
             {
                 endpoints.MapHub<CommandHub>("/hub");
             });
-            GameController.Current = app.ApplicationServices.GetService<GameController>();
         }
     }
 }
