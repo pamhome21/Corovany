@@ -8,9 +8,9 @@ namespace Corovany.logic
         {
             private GameCore.Game Game { get; }
 
-            public GameLogicHandler()
+            public GameLogicHandler(Action<string> reportInfo)
             {
-                Game = new GameCore.Game();
+                Game = new GameCore.Game(reportInfo);
             }
 
             public void ExecuteLogicEventCommand(ICommand command)
@@ -53,6 +53,7 @@ namespace Corovany.logic
                     enemy.EnemyChars.Add(new CharacterCore.Character("Kek", CharClasses.TestificateCl.Class, 1));
                     game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[0]));
                 }
+                game.ReportInfo("Врубаем экран");
             }
         }
         
@@ -60,10 +61,25 @@ namespace Corovany.logic
         {
             public void ExecuteCommand(GameCore.Game game)
             {
+                FillQueueWithUnits(game);
+                
+            }
+
+            private void FillQueueWithUnits(GameCore.Game game)
+            {
                 foreach (var unit in game.Units)
                 {
                     game.Queue.Enqueue(unit);
+                    if (unit.Character.Owner != null)
+                        game.PlayerUnitCounter++;
+                    else
+                        game.EnemyUnitCounter++;
                 }
+            }
+
+            private void CombatController(GameCore.Game game)
+            {
+                
             }
         }
     }
