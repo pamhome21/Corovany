@@ -15,6 +15,6 @@ export function BattleView(props: any){
     }
     return <div>
         <button onClick={executeInitState}>Execute init state</button>
-        {commands.map(command => <p>{command}</p>)}
+        {commands.map((command, i) => <p key={i}>{command}</p>)}
     </div>
 }

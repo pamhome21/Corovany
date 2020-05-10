@@ -22,6 +22,7 @@ namespace Corovany
 
         public GameController(IHubContext<CommandHub> hub)
         {
+            Console.WriteLine("Started game controller");
             _hub = hub;
             _game = new CoreEventHandler.GameLogicHandler(HandleData);
         }
