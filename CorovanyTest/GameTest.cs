@@ -29,11 +29,15 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(addPlayer);
             var initializeGame = new InitializeGameCommand();
             testGame.ExecuteLogicEventCommand(initializeGame);
-            CollectionAssert.AreEqual(new []{"Игрок 123 с ID 321 создан","Врубаем экран"}, commandArray);
+            CollectionAssert.AreEqual(new []
+            {
+                "Игрок 123 с ID 321 создан",
+                "Врубаем экран"
+            }, commandArray);
         }
 
         [Test]
-        public void InitCombatSystem()
+        public void InitCombatSystemTest()
         {
             var commandArray = new List<string>();
             var testGame = new GameLogicHandler(s =>
@@ -46,7 +50,73 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(initializeGame);
             var initializeCombatSystem = new InitializeCombatSystemCommand();
             testGame.ExecuteLogicEventCommand(initializeCombatSystem);
-            CollectionAssert.AreEqual(new []{"Игрок 123 с ID 321 создан","Врубаем экран","Очередь ходов юнитов заполнена"}, commandArray);
+            CollectionAssert.AreEqual(new []{
+                "Игрок 123 с ID 321 создан",
+                "Врубаем экран",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа Kek игрока 123"}, commandArray);
+        }
+        
+        [Test]
+        public void BasicCombatSystemTest()
+        {
+            var commandArray = new List<string>();
+            var testGame = new GameLogicHandler(s =>
+            {
+                commandArray.Add(s);
+            });
+            var addPlayer = new AddPlayerCommand("321","123");
+            testGame.ExecuteLogicEventCommand(addPlayer);
+            var initializeGame = new InitializeGameCommand();
+            testGame.ExecuteLogicEventCommand(initializeGame);
+            var initializeCombatSystem = new InitializeCombatSystemCommand();
+            testGame.ExecuteLogicEventCommand(initializeCombatSystem);
+            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            testGame.ExecuteLogicEventCommand(turn1);
+            CollectionAssert.AreEqual(new []{
+                "Игрок 123 с ID 321 создан",
+                "Врубаем экран",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа Kek игрока 123",
+                "Цель с названием KekBot: применён эффект перка Kek",
+                "Юнит KekBot умер",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа SlowKek игрока 123"
+            }, commandArray);
+        }
+        
+        [Test]
+        public void BasicCombatSystemEndTest()
+        {
+            var commandArray = new List<string>();
+            var testGame = new GameLogicHandler(s =>
+            {
+                commandArray.Add(s);
+            });
+            var addPlayer = new AddPlayerCommand("321","123");
+            testGame.ExecuteLogicEventCommand(addPlayer);
+            var initializeGame = new InitializeGameCommand();
+            testGame.ExecuteLogicEventCommand(initializeGame);
+            var initializeCombatSystem = new InitializeCombatSystemCommand();
+            testGame.ExecuteLogicEventCommand(initializeCombatSystem);
+            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            testGame.ExecuteLogicEventCommand(turn1);
+            var turn2 = new NextTurnCommand("Kek", "SlowKekBot");
+            testGame.ExecuteLogicEventCommand(turn2);
+            CollectionAssert.AreEqual(new []{
+                "Игрок 123 с ID 321 создан",
+                "Врубаем экран",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа Kek игрока 123",
+                "Цель с названием KekBot: применён эффект перка Kek",
+                "Юнит KekBot умер",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа SlowKek игрока 123",
+                "Цель с названием SlowKekBot: применён эффект перка Kek",
+                "Юнит SlowKekBot умер",
+                "Очередь ходов юнитов перепросчитана",
+                "Победа"
+            }, commandArray);
         }
     }
 }

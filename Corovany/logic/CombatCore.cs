@@ -83,6 +83,7 @@ namespace Corovany.logic
                     perk.Ability(target);
                     Cooldown[perk] = perk.Cooldown;
                 }
+                Initiative += 100;
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Corovany.logic
 {
@@ -46,13 +48,17 @@ namespace Corovany.logic
             foreach (var (_, player) in game.Players)
             {
                 player.CurrentChars[0] = new CharacterCore.Character("Kek", CharClasses.TestificateCl.Class, 1, player);
+                player.CurrentChars[1] = new CharacterCore.Character("SlowKek", CharClasses.SlowpokeCl.Class, 1, player);
                 game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[0]));
+                game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[1]));
             }
 
             foreach (var enemy in game.Enemies)
             {
-                enemy.EnemyChars.Add(new CharacterCore.Character("Kek", CharClasses.TestificateCl.Class, 1));
+                enemy.EnemyChars.Add(new CharacterCore.Character("KekBot", CharClasses.TestificateBotCl.Class, 1));
+                enemy.EnemyChars.Add(new CharacterCore.Character("SlowKekBot", CharClasses.SlowpokeBotCl.Class, 1));
                 game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[0]));
+                game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[1]));
             }
 
             game.ReportInfo("Врубаем экран");
@@ -63,21 +69,58 @@ namespace Corovany.logic
     {
         public void ExecuteCommand(GameCore.Game game)
         {
-            FillQueueWithUnits(game);
+            game.FillQueueWithUnits();
+            game.GetUnitFromQueue();
         }
-
-        private void FillQueueWithUnits(GameCore.Game game)
+    }
+    
+    public class NextTurnCommand : ICommand
+    {
+        private string PerkKey { get; set; }
+        private string TargetKey { get; set; }
+        public NextTurnCommand(string perkKey, string targetKey)
         {
-            foreach (var unit in game.Units)
+            PerkKey = perkKey;
+            TargetKey = targetKey;
+        }
+        
+        public void ExecuteCommand(GameCore.Game game)
+        {
+            if (!game.AvailablePerks.ContainsKey(PerkKey))
             {
-                game.UnitTurnQueue.Enqueue(unit);
+                game.ReportInfo($"Перк с названием {PerkKey} не существует");
+                return;
             }
 
-            game.ReportInfo("Очередь ходов юнитов заполнена");
+            if (!game.AvailableTargets.ContainsKey(TargetKey))
+            {
+                game.ReportInfo($"Цель с названием {TargetKey} не существует");
+                return;
+            }
+            game.CurrentUnit.CastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]);
+            game.ReportInfo($"Цель с названием {TargetKey}: применён эффект перка {PerkKey}");
+            game.ClearDeadUnits();
+            if (IsPlayerDead(game.Units))
+            {
+                game.ReportInfo("Билли Бонс умер");
+                return;
+            }
+            if (IsEnemyDead(game.Units))
+            {
+                game.ReportInfo("Победа");
+                return;
+            }
+            game.GetUnitFromQueue();
         }
 
-        private void CombatController(GameCore.Game game)
+        private bool IsPlayerDead(List<CombatCore.PlayerCombatUnit> units)
         {
+            return units.Count(unit => unit.Character.Owner != null) == 0;
+        }
+        
+        private bool IsEnemyDead(List<CombatCore.PlayerCombatUnit> units)
+        {
+            return units.Count(unit => unit.Character.Owner == null) == 0;
         }
     }
 }
