@@ -79,27 +79,15 @@ namespace Corovany.logic
             public void FillQueueWithUnits()
             {
                 UnitTurnQueue = new Queue<CombatCore.PlayerCombatUnit>();
-                Units.Sort(new UnitComparer());
-                foreach (var unit in Units)
+                var temp = Units
+                    .Where(unit => unit.State == CombatCore.UnitState.Fine)
+                    .ToList();
+                temp.Sort(new UnitComparer());
+                foreach (var unit in temp)
                 {
                     UnitTurnQueue.Enqueue(unit);
                 }
                 ReportInfo("Очередь ходов юнитов перепросчитана");
-            }
-
-            public void ClearDeadUnits()
-            {
-                foreach (var unit in Units)
-                {
-                    if (unit.State == CombatCore.UnitState.Dead)
-                        ReportInfo($"Юнит {unit.Character.Name} умер");
-                    if (unit.State == CombatCore.UnitState.Escaped)
-                        ReportInfo($"Юнит {unit.Character.Name} сбежал");
-                }
-                Units = Units
-                    .Where(unit => unit.State == CombatCore.UnitState.Fine)
-                    .ToList();
-                FillQueueWithUnits();
             }
         }
         

@@ -99,7 +99,7 @@ namespace Corovany.logic
             }
             game.CurrentUnit.CastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]);
             game.ReportInfo($"Цель с названием {TargetKey}: применён эффект перка {PerkKey}");
-            game.ClearDeadUnits();
+            game.FillQueueWithUnits();
             if (IsPlayerDead(game.Units))
             {
                 game.ReportInfo("Билли Бонс умер");
@@ -115,12 +115,14 @@ namespace Corovany.logic
 
         private bool IsPlayerDead(List<CombatCore.PlayerCombatUnit> units)
         {
-            return units.Count(unit => unit.Character.Owner != null) == 0;
+            return units.Count(unit => unit.Character.Owner != null 
+                                       && unit.State == CombatCore.UnitState.Fine) == 0;
         }
         
         private bool IsEnemyDead(List<CombatCore.PlayerCombatUnit> units)
         {
-            return units.Count(unit => unit.Character.Owner == null) == 0;
+            return units.Count(unit => unit.Character.Owner == null 
+                                       && unit.State == CombatCore.UnitState.Fine) == 0;
         }
     }
 }
