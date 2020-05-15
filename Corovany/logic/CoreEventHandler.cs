@@ -117,12 +117,14 @@ namespace Corovany.logic
             game.FillQueueWithUnits();
             if (IsPlayerDead(game.Units))
             {
+                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
                 game.ReportInfo(new BattleEnd(false));
                 return;
             }
 
             if (IsEnemyDead(game.Units))
             {
+                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
                 game.ReportInfo(new BattleEnd(true));
                 return;
             }
