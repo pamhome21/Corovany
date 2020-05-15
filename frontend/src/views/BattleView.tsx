@@ -53,7 +53,7 @@ export function BattleView(props: any) {
             <input placeholder={'targetKey'} onChange={(e) => updateTargetKey(e.target.value)}/>
         </div>
         <div>
-            <p>Входящие команды</p>
+            <p>Команды</p>
             {commands.map((command, i) => <p key={i}>{command}</p>)}
         </div>
     </>
