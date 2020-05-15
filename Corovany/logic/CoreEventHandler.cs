@@ -25,6 +25,15 @@ namespace Corovany.logic
         public void ExecuteCommand(GameCore.Game game);
     }
 
+    public class InitializeGameStateResetCommand : ICommand
+    {
+        public void ExecuteCommand(GameCore.Game game)
+        {
+            game.Reset();
+            game.ReportInfo(new Reset(true));
+        }
+    }
+
     public class AddPlayerCommand : ICommand
     {
         private (string Id, string Name) PlayerData { get; set; }

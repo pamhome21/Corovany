@@ -59,6 +59,17 @@ namespace Corovany.logic
                 ReportInfo = reportInfo;
             }
 
+            public void Reset()
+            {
+                Players = new Dictionary<string, Player>();
+                Enemies = new List<Enemy>();
+                Units = new List<CombatCore.PlayerCombatUnit>();
+                UnitTurnQueue = null;
+                CurrentUnit = null;
+                AvailableTargets = null;
+                AvailablePerks = null;
+            }
+
             public CombatCore.PlayerCombatUnit GetUnitFromQueue()
             {
                 var counter = 0;

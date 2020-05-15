@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Corovany.FrontendCommands;
 using Corovany.logic;
 using NUnit.Framework;
 
@@ -9,9 +10,10 @@ namespace CorovanyTest
         [Test]
         public void AddPlayerTest()
         {
+            var commandArray = new List<IFrontendCommand>();
             var testGame = new GameLogicHandler(s =>
             {
-                Assert.AreEqual("Игрок 123 с ID 321 создан", s);
+                commandArray.Add(s);
             });
             var addPlayer = new AddPlayerCommand("321","123");
             testGame.ExecuteLogicEventCommand(addPlayer);
@@ -20,7 +22,7 @@ namespace CorovanyTest
         [Test]
         public void InitGameTest()
         {
-            var commandArray = new List<string>();
+            var commandArray = new List<IFrontendCommand>();
             var testGame = new GameLogicHandler(s =>
             {
                 commandArray.Add(s);
@@ -39,7 +41,7 @@ namespace CorovanyTest
         [Test]
         public void InitCombatSystemTest()
         {
-            var commandArray = new List<string>();
+            var commandArray = new List<IFrontendCommand>();
             var testGame = new GameLogicHandler(s =>
             {
                 commandArray.Add(s);
@@ -60,7 +62,7 @@ namespace CorovanyTest
         [Test]
         public void BasicCombatSystemTest()
         {
-            var commandArray = new List<string>();
+            var commandArray = new List<IFrontendCommand>();
             var testGame = new GameLogicHandler(s =>
             {
                 commandArray.Add(s);
@@ -87,7 +89,7 @@ namespace CorovanyTest
         [Test]
         public void BasicCombatSystemEndTest()
         {
-            var commandArray = new List<string>();
+            var commandArray = new List<IFrontendCommand>();
             var testGame = new GameLogicHandler(s =>
             {
                 commandArray.Add(s);
@@ -119,7 +121,7 @@ namespace CorovanyTest
         [Test]
         public void BasicCombatSystemWithFFTest()
         {
-            var commandArray = new List<string>();
+            var commandArray = new List<IFrontendCommand>();
             var testGame = new GameLogicHandler(s =>
             {
                 commandArray.Add(s);

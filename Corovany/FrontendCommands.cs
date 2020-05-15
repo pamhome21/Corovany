@@ -50,6 +50,12 @@ namespace Corovany
             public BattleEnd(bool hasWon) => Payload = hasWon;
         }
 
+        public class Reset : IFrontendCommand
+        {
+            public object Payload { get; }
+            public Reset(bool wasReset) => Payload = wasReset;
+        }
+
         public class FrontendError : IFrontendCommand
         {
             public object Payload { get; }
