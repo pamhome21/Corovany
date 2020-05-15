@@ -42,10 +42,10 @@ namespace Corovany
                     (ICommand) Activator.CreateInstance(_commandTypes[commandStore.Type], commandStore.Args);
                 _game.ExecuteLogicEventCommand(commandInstance);
             }
-            // catch (JsonException)
-            // {
-            //     Console.WriteLine("Error in json");
-            // }
+            catch (JsonException)
+            {
+                Console.WriteLine("Error in json");
+            }
             catch (DataException)
             {
                 Console.WriteLine("Wrong command name");
@@ -56,6 +56,7 @@ namespace Corovany
         {
             _hub.Clients.All.SendCoreAsync("newCommand", new object[]
             {
+                data.GetType().Name,
                 JsonConvert.SerializeObject(data.Payload, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Serialize})
             });
         }

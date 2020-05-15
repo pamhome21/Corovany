@@ -15,9 +15,10 @@ export const ExecuteCommand: (payload: Command) => Action = (payload: Command) =
     payload
 })
 
-export const AddCommand: (command: string) => Action = (command: string) => ({
+export const AddCommand: (command: string, commandName: string) => Action = (command: string, commandName: string) => ({
     type: ActionType.AddCommand,
     payload: {
+        commandName,
         newCommand: command
     }
 })

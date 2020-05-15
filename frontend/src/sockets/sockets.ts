@@ -4,14 +4,13 @@ import {AddCommand} from "../store/actions";
 
 const connection = new signalR.HubConnectionBuilder().withUrl('/hub').build();
 
-connection.on('newCommand', (command: string) => {
-    store.dispatch(AddCommand(command));
+connection.on('newCommand', (commandName: string, command: string) => {
+    store.dispatch(AddCommand(command, commandName));
 });
 
 const connectionPromise = connection.start().catch(err => console.log(err));
 
 export async function SendMessage(message: string) {
     await connectionPromise;
-    console.log(message);
     await connection.send('NewCommand', message);
 }
