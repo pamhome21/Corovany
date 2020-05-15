@@ -14,7 +14,11 @@ namespace Corovany
     {
         private static Dictionary<string, Type> _commandTypes = new Dictionary<string, Type>()
         {
-            {"InitializeGameCommand", typeof(InitializeGameCommand)}
+            {"AddPlayerCommand", typeof(AddPlayerCommand)},
+            {"InitializeGameCommand", typeof(InitializeGameCommand)},
+            {"InitializeCombatSystemCommand", typeof(InitializeCombatSystemCommand)},
+            {"NextTurnCommand",typeof(NextTurnCommand)}
+            
         };
 
         private readonly GameLogicHandler _game;
