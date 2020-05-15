@@ -17,8 +17,8 @@ namespace Corovany
             {"AddPlayerCommand", typeof(AddPlayerCommand)},
             {"InitializeGameCommand", typeof(InitializeGameCommand)},
             {"InitializeCombatSystemCommand", typeof(InitializeCombatSystemCommand)},
-            {"NextTurnCommand",typeof(NextTurnCommand)}
-            
+            {"NextTurnCommand",typeof(NextTurnCommand)},
+            {"InitializeGameStateResetCommand", typeof(InitializeGameStateResetCommand)},
         };
 
         private readonly GameLogicHandler _game;

@@ -35,6 +35,12 @@ export function BattleView(props: any) {
             Args: [perkKey, targetKey]
         }))
     }
+    const executeResetCommand = () => {
+        dispatch(ExecuteCommand({
+            Type: 'InitializeGameStateResetCommand',
+            Args: [],
+        }))
+    }
     return <>
         <div>
             <button onClick={executeAddPlayer}>Execute add player</button>
@@ -53,8 +59,11 @@ export function BattleView(props: any) {
             <input placeholder={'targetKey'} onChange={(e) => updateTargetKey(e.target.value)}/>
         </div>
         <div>
+            <button onClick={executeResetCommand}>Execute reset command</button>
+        </div>
+        <div>
             <p>Команды</p>
             {commands.map((command, i) => <pre key={i}>{command}</pre>)}
         </div>
     </>
-}
+}   
