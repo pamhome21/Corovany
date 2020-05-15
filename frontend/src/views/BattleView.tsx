@@ -54,7 +54,7 @@ export function BattleView(props: any) {
         </div>
         <div>
             <p>Команды</p>
-            {commands.map((command, i) => <p key={i}>{command}</p>)}
+            {commands.map((command, i) => <pre key={i}>{command}</pre>)}
         </div>
     </>
 }

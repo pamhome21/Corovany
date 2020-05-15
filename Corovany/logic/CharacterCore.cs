@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Corovany.logic
 {
@@ -35,7 +36,7 @@ namespace Corovany.logic
             public int HealthPoints { get; set; }
             public int MoralePoints { get; set; }
             public int SpecialPoints { get; set; }
-            public GameCore.Player Owner { get; set; }
+            public string OwnerId { get; set; }
 
             public Character(string name, CharacterClass charClass, int level)
             {
@@ -50,7 +51,7 @@ namespace Corovany.logic
                 Rename(name);
                 CharClass = charClass;
                 Level = SetLevel(level);
-                Owner = owner;
+                OwnerId = owner.Id;
                 UpdateLvl();
             }
 
@@ -86,6 +87,7 @@ namespace Corovany.logic
             public int Cost { get; }
             public int Cooldown { get; }
             public int LevelToUnlock { get; }
+            [JsonIgnore]
             public Action<CombatCore.ICombatUnitPattern> Ability { get; }
 
             public Perk(string name, int cost, int cd, int lvlToUnlock, Action<CombatCore.ICombatUnitPattern> ability)

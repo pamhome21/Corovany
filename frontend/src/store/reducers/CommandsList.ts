@@ -21,7 +21,7 @@ export default function (state = initialState, action: Action): ApplicationState
         case ActionType.AddCommand:
             return {
                 ...state,
-                commands: [...state.commands, `From server: ${action.payload.newCommand}`]
+                commands: [...state.commands, `From server: ${JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)}`]
             }
         default:
             return state;

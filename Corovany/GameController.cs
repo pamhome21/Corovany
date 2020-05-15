@@ -42,19 +42,22 @@ namespace Corovany
                     (ICommand) Activator.CreateInstance(_commandTypes[commandStore.Type], commandStore.Args);
                 _game.ExecuteLogicEventCommand(commandInstance);
             }
-            catch (JsonException)
-            {
-                Console.WriteLine("Error in json");
-            }
+            // catch (JsonException)
+            // {
+            //     Console.WriteLine("Error in json");
+            // }
             catch (DataException)
             {
                 Console.WriteLine("Wrong command name");
             }
         }
 
-        private void HandleData(string data)
+        private void HandleData(FrontendCommands.IFrontendCommand data)
         {
-            _hub.Clients.All.SendCoreAsync("newCommand", new object[] {data});
+            _hub.Clients.All.SendCoreAsync("newCommand", new object[]
+            {
+                JsonConvert.SerializeObject(data.Payload, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Serialize})
+            });
         }
 
         private class CommandStore

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Corovany.FrontendCommands;
 
 namespace Corovany.logic
 {
@@ -12,14 +13,16 @@ namespace Corovany.logic
         public class Player
         {
             public string Name { get; set; }
+            public string Id { get; set; }
             public int Gold { get; set; }
             public int Shards { get; set; }
             public List<CharacterCore.Character> PlayerChars { get; set; }
             public CharacterCore.Character[] CurrentChars { get; set; }
 
-            public Player(string name)
+            public Player(string id, string name)
             {
                 Name = name;
+                Id = id;
                 Gold = MoneyOnStart;
                 Shards = 0;
                 PlayerChars = new List<CharacterCore.Character>();
@@ -43,12 +46,12 @@ namespace Corovany.logic
             public List<Enemy> Enemies { get; set; }
             public List<CombatCore.PlayerCombatUnit> Units { get; set; }
             public Queue<CombatCore.PlayerCombatUnit> UnitTurnQueue { get; set; }
-            public Action<string> ReportInfo { get; set; }
+            public Action<IFrontendCommand> ReportInfo { get; set; }
             public CombatCore.PlayerCombatUnit CurrentUnit { get; set; }
             public Dictionary<string,CombatCore.PlayerCombatUnit> AvailableTargets { get; set; }
             public Dictionary<string,CharacterCore.Perk> AvailablePerks { get; set; }
 
-            public Game(Action<string> reportInfo)
+            public Game(Action<IFrontendCommand> reportInfo)
             {
                 Players = new Dictionary<string, Player>();
                 Enemies = new List<Enemy>();
@@ -56,17 +59,17 @@ namespace Corovany.logic
                 ReportInfo = reportInfo;
             }
 
-            public void GetUnitFromQueue()
+            public CombatCore.PlayerCombatUnit GetUnitFromQueue()
             {
                 var counter = 0;
-                while (counter == 0 || CurrentUnit.Character.Owner == null && counter < Units.Count)
+                while (counter == 0 || CurrentUnit.Character.OwnerId == null && counter < Units.Count)
                 {
                     CurrentUnit = UnitTurnQueue.Dequeue();
                     counter++;
-                    if (CurrentUnit.Character.Owner != null)
-                    {
-                        ReportInfo($"Ход персонажа {CurrentUnit.Character.Name} игрока {CurrentUnit.Character.Owner.Name}");
-                    }
+                    // if (CurrentUnit.Character.Owner != null)
+                    // {
+                    //     ReportInfo($"Ход персонажа {CurrentUnit.Character.Name} игрока {CurrentUnit.Character.Owner.Name}");
+                    // }
                     AvailableTargets = Units
                         .Where(unit => unit!=CurrentUnit)
                         .ToDictionary(unit => unit.Character.Name);
@@ -74,6 +77,7 @@ namespace Corovany.logic
                         .ToDictionary(perk => perk.Name);
                     UnitTurnQueue.Enqueue(CurrentUnit);
                 }
+                return CurrentUnit.Character.OwnerId != null ? CurrentUnit : null;
             }
             
             public void FillQueueWithUnits()
@@ -87,7 +91,7 @@ namespace Corovany.logic
                 {
                     UnitTurnQueue.Enqueue(unit);
                 }
-                ReportInfo("Очередь ходов юнитов перепросчитана");
+                // ReportInfo("Очередь ходов юнитов перепросчитана");
             }
         }
         
@@ -99,9 +103,9 @@ namespace Corovany.logic
                     return -1;
                 if (first.Initiative > second.Initiative)
                     return 1;
-                if (first.Character.Owner != null && second.Character.Owner == null)
+                if (first.Character.OwnerId != null && second.Character.OwnerId == null)
                     return -1; 
-                if (first.Character.Owner == null && second.Character.Owner != null)
+                if (first.Character.OwnerId == null && second.Character.OwnerId != null)
                     return 1;
                 return 0;
             }
