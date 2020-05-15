@@ -118,5 +118,39 @@ namespace CorovanyTest
                 "Победа"
             }, commandArray);
         }
+        
+        [Test]
+        public void BasicCombatSystemWithFFTest()
+        {
+            var commandArray = new List<string>();
+            var testGame = new GameLogicHandler(s =>
+            {
+                commandArray.Add(s);
+            });
+            var addPlayer = new AddPlayerCommand("321","123");
+            testGame.ExecuteLogicEventCommand(addPlayer);
+            var initializeGame = new InitializeGameCommand();
+            testGame.ExecuteLogicEventCommand(initializeGame);
+            var initializeCombatSystem = new InitializeCombatSystemCommand();
+            testGame.ExecuteLogicEventCommand(initializeCombatSystem);
+            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            testGame.ExecuteLogicEventCommand(turn1);
+            var turn2 = new NextTurnCommand("Kek", "Kek");
+            testGame.ExecuteLogicEventCommand(turn2);
+            CollectionAssert.AreEqual(new []{
+                "Игрок 123 с ID 321 создан",
+                "Врубаем экран",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа Kek игрока 123",
+                "Цель с названием KekBot: применён эффект перка Kek",
+                "Юнит KekBot умер",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа SlowKek игрока 123",
+                "Цель с названием Kek: применён эффект перка Kek",
+                "Юнит Kek умер",
+                "Очередь ходов юнитов перепросчитана",
+                "Ход персонажа SlowKek игрока 123"
+            }, commandArray);
+        }
     }
 }

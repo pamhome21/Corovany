@@ -59,7 +59,7 @@ namespace Corovany.logic
             public void GetUnitFromQueue()
             {
                 var counter = 0;
-                while (counter == 0 || CurrentUnit.Character.Owner == null && counter < Units.Count-1)
+                while (counter == 0 || CurrentUnit.Character.Owner == null && counter < Units.Count)
                 {
                     CurrentUnit = UnitTurnQueue.Dequeue();
                     counter++;
