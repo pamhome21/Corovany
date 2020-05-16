@@ -121,6 +121,8 @@ namespace Corovany.Logic
             }
 
             game.CurrentUnit.CastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]);
+            game.ReportInfo(new FrontendSpellLog(game.CurrentUnit, 
+                game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]));
             game.FillQueueWithUnits();
             if (IsPlayerDead(game.Units))
             {

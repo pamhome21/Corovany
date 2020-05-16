@@ -100,7 +100,9 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(initializeCombatSystem);
             var turn1 = new NextTurnCommand("Kek", "KekBot");
             testGame.ExecuteLogicEventCommand(turn1);
-            var battlefieldOverwatch = (BattleFieldPayload)commandArray[3].Payload;
+            var spellInfo = (SpellPayload) commandArray[3].Payload;
+            var battlefieldOverwatch = (BattleFieldPayload)commandArray[4].Payload;
+            Assert.AreEqual(spellInfo.CurrentUnit.Character.Name, "Kek");
             Assert.AreEqual(battlefieldOverwatch.Units.First(unit => unit.Character.Name=="KekBot").State, 
                 CombatCore.UnitState.Dead);
         }
@@ -123,8 +125,8 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(turn1);
             var turn2 = new NextTurnCommand("Kek", "SlowKekBot");
             testGame.ExecuteLogicEventCommand(turn2);
-            var battlefieldOverwatch = (BattleFieldPayload)commandArray[4].Payload;
-            var hasWon = (bool) commandArray[5].Payload;
+            var battlefieldOverwatch = (BattleFieldPayload)commandArray[6].Payload;
+            var hasWon = (bool) commandArray[7].Payload;
             Assert.AreEqual(battlefieldOverwatch.Queue.Count(unit => unit.Character.OwnerId==null), 0);
             Assert.AreEqual(hasWon, true);
         }
@@ -147,7 +149,7 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(turn1);
             var turn2 = new NextTurnCommand("Kek", "Kek");
             testGame.ExecuteLogicEventCommand(turn2);
-            var battlefieldOverwatch = (BattleFieldPayload)commandArray[4].Payload;
+            var battlefieldOverwatch = (BattleFieldPayload)commandArray[6].Payload;
             Assert.AreEqual(battlefieldOverwatch.Queue.Count(unit => unit.Character.OwnerId!=null), 1);
         }
 
@@ -169,10 +171,10 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(turn1);
             var reset = new InitializeGameStateResetCommand();
             testGame.ExecuteLogicEventCommand(reset);
-            Assert.AreEqual((bool)commandArray[4].Payload, true);
+            Assert.AreEqual((bool)commandArray[5].Payload, true);
             var addPlayerAfterReset = new AddPlayerCommand("123","321");
             testGame.ExecuteLogicEventCommand(addPlayerAfterReset);
-            var playerList = (List<GameCore.Player>) commandArray[5].Payload;
+            var playerList = (List<GameCore.Player>) commandArray[6].Payload;
             var player = playerList[0];
             Assert.AreEqual(player.Id, "123");
             Assert.AreEqual(player.Name, "321");

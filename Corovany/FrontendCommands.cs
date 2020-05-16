@@ -61,5 +61,26 @@ namespace Corovany
             public object Payload { get; }
             public FrontendError(string text) => Payload = text;
         }
+
+        public class FrontendSpellLog : IFrontendCommand
+        {
+            public object Payload { get; }
+            public FrontendSpellLog(CombatCore.PlayerCombatUnit currentUnit, 
+                CharacterCore.Perk perk,
+                CombatCore.PlayerCombatUnit targetUnit) => 
+                Payload = new SpellPayload()
+                {
+                    CurrentUnit = currentUnit,
+                    Perk = perk,
+                    Target = targetUnit
+                };
+        }
+        
+        public class SpellPayload
+        {
+            public CombatCore.PlayerCombatUnit CurrentUnit;
+            public CharacterCore.Perk Perk;
+            public CombatCore.PlayerCombatUnit Target;
+        }
     }
 }
