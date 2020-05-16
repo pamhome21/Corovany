@@ -34,6 +34,21 @@ namespace Corovany.Logic
         }
     }
 
+    public class ReceiveFullDataStateCommand : ICommand
+    {
+        public void ExecuteCommand(GameCore.Game game)
+        {
+            game.ReportInfo(new PlayerAdded(game.Players.Values.ToList()));
+            game.ReportInfo(new GameInitialized(game.Players
+                .SelectMany(player => player.Value.CurrentChars)
+                .ToList()));
+            if (game.CurrentUnit != null)
+            {
+                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+            }
+        }
+    }
+
     public class AddPlayerCommand : ICommand
     {
         private (string Id, string Name) PlayerData { get; set; }

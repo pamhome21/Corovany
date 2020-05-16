@@ -180,5 +180,28 @@ namespace CorovanyTest
             Assert.AreEqual(player.Name, "321");
             Assert.AreEqual(playerList.Count, 1);
         }
+
+        [Test]
+        public void GetDataTest()
+        {
+            var commandArray = new List<IFrontendCommand>();
+            var testGame = new GameLogicHandler(s =>
+            {
+                commandArray.Add(s);
+            });
+            var addPlayer = new AddPlayerCommand("321","123");
+            testGame.ExecuteLogicEventCommand(addPlayer);
+            var initializeGame = new InitializeGameCommand();
+            testGame.ExecuteLogicEventCommand(initializeGame);
+            var initializeCombatSystem = new InitializeCombatSystemCommand();
+            testGame.ExecuteLogicEventCommand(initializeCombatSystem);
+            var receiveFullDataState = new ReceiveFullDataStateCommand();
+            testGame.ExecuteLogicEventCommand(receiveFullDataState);
+            Assert.AreEqual(commandArray[0].Payload, commandArray[3].Payload);
+            Assert.AreEqual(commandArray[1].Payload, commandArray[4].Payload);
+            var bfp1 = (BattleFieldPayload) commandArray[2].Payload;
+            var bfp2 = (BattleFieldPayload) commandArray[5].Payload;
+            Assert.AreEqual(bfp1.Queue, bfp2.Queue);
+        }
     }
 }
