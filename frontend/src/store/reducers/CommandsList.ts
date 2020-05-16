@@ -96,6 +96,8 @@ export interface CharacterClass {
 
 export interface Perk {
     Name: string
+    SkillFile: string
+    Description: string
     Cost: number
     Cooldown: number
     LevelToUnlock: number

@@ -26,7 +26,8 @@ export function TextGameDisplay(props: any) {
     return <div style={{
         backgroundColor: 'rgb(245, 245, 245)',
         overflowY: 'scroll',
-        height: '400px'
+        height: '600px',
+        width: '100%'
     }}>
         <p>Состояние:</p>
         <div style={{marginLeft: '15px'}}>
@@ -51,12 +52,13 @@ export function TextGameDisplay(props: any) {
         </>}
         {(gameState.state === 'combatReady' || gameState.state === 'finished') && currentUnit && <>
             <p>Текущий юнит: {currentUnit.Character.Name}</p>
-            <p>Спосбности:</p>
+            <p>Способности:</p>
             <div style={{marginLeft: '15px'}}>
                 {currentUnit.Character.CharClass.Perks.map((p, i) => <div key={i}>
                     <p>Название: {p.Name}</p>
                     <div style={{marginLeft: '15px'}}>
                         <p>Стоимость: {p.Cost}</p>
+                        <p>Описание: {p.Description}</p>
                     </div>
                 </div>)}
             </div>
