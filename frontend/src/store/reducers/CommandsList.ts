@@ -9,13 +9,11 @@ export interface ApplicationState {
     queue: Unit[]
     players: Player[]
     characters: Character[]
-    commands: string[]
     won: boolean
 }
 
 const initialState: ApplicationState = {
     state: 'uninitialized',
-    commands: [],
     players: [],
     characters: [],
     currentUnit: null,
@@ -28,34 +26,25 @@ export default function (state = initialState, action: Action): ApplicationState
     switch (action.type) {
         case ActionType.ExecuteCommand:
             SendMessage(JSON.stringify(action.payload));
-            return {
-                ...state,
-                commands: [...state.commands, `To server: ${JSON.stringify(action.payload)}`]
-            };
+            return state
         case ActionType.AddCommand:
             const commandValue = JSON.parse(action.payload.newCommand);
             switch (action.payload.commandName) {
                 case('PlayerAdded'):
                     return {
                         ...state,
-                        commands: [...state.commands,
-                            `From server(${action.payload.commandName}): ${JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)}`],
                         players: commandValue,
                     }
                 case('GameInitialized'):
                     return {
                         ...state,
                         state: 'stateReady',
-                        commands: [...state.commands,
-                            `From server(${action.payload.commandName}): ${JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)}`],
                         characters: commandValue
                     }
                 case('BattleFieldUpdated'):
                     return {
                         ...state,
                         state: 'combatReady',
-                        commands: [...state.commands,
-                            `From server(${action.payload.commandName}): ${JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)}`],
                         currentUnit: commandValue.CurrentUnit,
                         units: commandValue.Units,
                         queue: commandValue.Queue,
@@ -66,14 +55,14 @@ export default function (state = initialState, action: Action): ApplicationState
                         state: 'finished',
                         won: commandValue,
                     }
+                case('FrontendError'):
+                    return {
+                        ...state,
+                    }
                 case('Reset'):
                     return initialState
                 default:
-                    return {
-                        ...state,
-                        commands: [...state.commands,
-                            `From server(${action.payload.commandName}): ${JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)}`]
-                    }
+                    return state
             }
         default:
             return state;

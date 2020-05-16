@@ -1,6 +1,8 @@
 import {RootState} from "./reducers";
 
-export const getCommands = (store: RootState) => store.CommandsList.commands;
+export const getCommands = (store: RootState) => store.Logs.commands;
+
+export const getSpells = (store: RootState) => store.Logs.spellLog;
 
 export const getQueue = (store: RootState) => store.CommandsList.queue;
 

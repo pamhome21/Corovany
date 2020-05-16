@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getCommands} from "../store/selectors";
+import {getCommands, getSpells} from "../store/selectors";
 import {ExecuteCommand} from "../store/actions";
 import {TextGameDisplay} from "../components/TextGameDisplay";
 
 // Displays battle actions
 export function BattleView(props: any) {
-    const commands = useSelector(getCommands);
+    const spells = useSelector(getSpells);
     const dispatch = useDispatch();
     const executeInitState = () => {
         dispatch(ExecuteCommand({
@@ -42,6 +42,13 @@ export function BattleView(props: any) {
             Args: [],
         }))
     }
+    
+    const executeReceiveFullDataStateCommand = () => {
+        dispatch(ExecuteCommand({
+            Type: 'ReceiveFullDataStateCommand',
+            Args: [],
+        }))
+    }
     return <>
         <div style={{
             backgroundColor: 'rgb(250, 250, 250)'
@@ -66,6 +73,9 @@ export function BattleView(props: any) {
                 <button onClick={executeResetCommand}>Execute reset command</button>
             </div>
             <div>
+                <button onClick={executeReceiveFullDataStateCommand}>Execute receive full data state command</button>
+            </div>
+            <div>
                 <TextGameDisplay/>
             </div>
         </div>
@@ -74,9 +84,9 @@ export function BattleView(props: any) {
             overflowY: 'scroll',
             backgroundColor: 'rgb(235, 235, 235)'
         }}>
-            <p>Команды:</p>
+            <p>Способности:</p>
             <div style={{marginLeft: '15px'}}>
-                {commands.map((command, i) => <pre key={i}>{command}</pre>)}
+                {spells.map((spell, i) => <pre key={i}>{spell}</pre>)}
             </div>
         </div>
     </>
