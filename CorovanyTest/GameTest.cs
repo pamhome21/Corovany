@@ -98,7 +98,7 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(initializeGame);
             var initializeCombatSystem = new InitializeCombatSystemCommand();
             testGame.ExecuteLogicEventCommand(initializeCombatSystem);
-            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            var turn1 = new NextTurnCommand("Power Blade", "KekBot");
             testGame.ExecuteLogicEventCommand(turn1);
             var spellInfo = (SpellPayload) commandArray[3].Payload;
             var battlefieldOverwatch = (BattleFieldPayload)commandArray[4].Payload;
@@ -121,9 +121,9 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(initializeGame);
             var initializeCombatSystem = new InitializeCombatSystemCommand();
             testGame.ExecuteLogicEventCommand(initializeCombatSystem);
-            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            var turn1 = new NextTurnCommand("Power Blade", "KekBot");
             testGame.ExecuteLogicEventCommand(turn1);
-            var turn2 = new NextTurnCommand("Kek", "SlowKekBot");
+            var turn2 = new NextTurnCommand("Power Blade", "SlowKekBot");
             testGame.ExecuteLogicEventCommand(turn2);
             var battlefieldOverwatch = (BattleFieldPayload)commandArray[6].Payload;
             var hasWon = (bool) commandArray[7].Payload;
@@ -145,9 +145,9 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(initializeGame);
             var initializeCombatSystem = new InitializeCombatSystemCommand();
             testGame.ExecuteLogicEventCommand(initializeCombatSystem);
-            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            var turn1 = new NextTurnCommand("Power Blade", "KekBot");
             testGame.ExecuteLogicEventCommand(turn1);
-            var turn2 = new NextTurnCommand("Kek", "Kek");
+            var turn2 = new NextTurnCommand("Power Blade", "Kek");
             testGame.ExecuteLogicEventCommand(turn2);
             var battlefieldOverwatch = (BattleFieldPayload)commandArray[6].Payload;
             Assert.AreEqual(battlefieldOverwatch.Queue.Count(unit => unit.Character.OwnerId!=null), 1);
@@ -167,7 +167,7 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(initializeGame);
             var initializeCombatSystem = new InitializeCombatSystemCommand();
             testGame.ExecuteLogicEventCommand(initializeCombatSystem);
-            var turn1 = new NextTurnCommand("Kek", "KekBot");
+            var turn1 = new NextTurnCommand("Power Blade", "KekBot");
             testGame.ExecuteLogicEventCommand(turn1);
             var reset = new InitializeGameStateResetCommand();
             testGame.ExecuteLogicEventCommand(reset);

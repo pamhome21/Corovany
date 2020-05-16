@@ -84,15 +84,19 @@ namespace Corovany.Logic
         public class Perk
         {
             public string Name { get; }
+            public string SkillFile { get; }
+            public string Description { get; }
             public int Cost { get; }
             public int Cooldown { get; }
             public int LevelToUnlock { get; }
             [JsonIgnore]
             public Action<CombatCore.ICombatUnitPattern> Ability { get; }
 
-            public Perk(string name, int cost, int cd, int lvlToUnlock, Action<CombatCore.ICombatUnitPattern> ability)
+            public Perk(string name, string skillFile, string description, int cost, int cd, int lvlToUnlock, Action<CombatCore.ICombatUnitPattern> ability)
             {
                 Name = name;
+                SkillFile = skillFile;
+                Description = description;
                 Cost = cost;
                 Cooldown = cd;
                 LevelToUnlock = lvlToUnlock;

@@ -75,21 +75,27 @@ namespace Corovany.Logic
 
     public class InitializeGameCommand : ICommand
     {
+        //TODO
         public void ExecuteCommand(GameCore.Game game)
         {
             foreach (var (_, player) in game.Players)
             {
-                player.CurrentChars[0] = new CharacterCore.Character("Kek", CharClasses.TestificateCl.Class, 1, player);
+                player.CurrentChars[0] = new CharacterCore.Character("Kek", CharClasses.Human.Class, 1, player);
+                player.CurrentChars[0].HealthPoints = 25;
                 player.CurrentChars[1] =
-                    new CharacterCore.Character("SlowKek", CharClasses.SlowpokeCl.Class, 1, player);
+                    new CharacterCore.Character("SlowKek", CharClasses.Human.Class, 1, player);
+                player.CurrentChars[1].Initiative = 20;
                 game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[0]));
                 game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[1]));
             }
 
             foreach (var enemy in game.Enemies)
             {
-                enemy.EnemyChars.Add(new CharacterCore.Character("KekBot", CharClasses.TestificateBotCl.Class, 1));
-                enemy.EnemyChars.Add(new CharacterCore.Character("SlowKekBot", CharClasses.SlowpokeBotCl.Class, 1));
+                enemy.EnemyChars.Add(new CharacterCore.Character("KekBot", CharClasses.Human.Class, 1));
+                enemy.EnemyChars[0].HealthPoints = 25;
+                enemy.EnemyChars.Add(new CharacterCore.Character("SlowKekBot", CharClasses.Human.Class, 1));
+                enemy.EnemyChars[1].HealthPoints = 50;
+                enemy.EnemyChars[1].Initiative = 25;
                 game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[0]));
                 game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[1]));
             }
