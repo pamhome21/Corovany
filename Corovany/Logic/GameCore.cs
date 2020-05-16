@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Corovany.FrontendCommands;
 
-namespace Corovany.logic
+namespace Corovany.Logic
 {
     public class GameCore
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Corovany.FrontendCommands;
 
-namespace Corovany.logic
+namespace Corovany.Logic
 {
     public class GameLogicHandler
     {
@@ -45,8 +45,15 @@ namespace Corovany.logic
 
         public void ExecuteCommand(GameCore.Game game)
         {
-            game.Players.Add(PlayerData.Id, new GameCore.Player(PlayerData.Id, PlayerData.Name));
-            game.Enemies.Add(new GameCore.Enemy());
+            if (game.Players.Keys.Contains(PlayerData.Id))
+            {
+                game.ReportInfo(new FrontendError($"Игрок с ID {PlayerData.Id} уже существует"));
+            }
+            else
+            {
+                game.Players.Add(PlayerData.Id, new GameCore.Player(PlayerData.Id, PlayerData.Name));
+                game.Enemies.Add(new GameCore.Enemy());
+            }
             game.ReportInfo(new PlayerAdded(game.Players.Values.ToList()));
         }
     }

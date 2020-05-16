@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using Corovany;
 using Corovany.FrontendCommands;
-using Corovany.logic;
+using Corovany.Logic;
 using NUnit.Framework;
 
 namespace CorovanyTest
@@ -22,6 +22,24 @@ namespace CorovanyTest
             var addPlayer = new AddPlayerCommand("321","123");
             testGame.ExecuteLogicEventCommand(addPlayer); 
             var playerList = (List<GameCore.Player>) commandArray[0].Payload;
+            Assert.AreEqual(playerList[0].Id, "321");
+            Assert.AreEqual(playerList[0].Name, "123");
+        }
+        
+        [Test]
+        public void AddPlayerAlreadyExistsTest()
+        {
+            var commandArray = new List<IFrontendCommand>();
+            var testGame = new GameLogicHandler(s =>
+            {
+                commandArray.Add(s);
+            });
+            var addPlayer = new AddPlayerCommand("321","123");
+            testGame.ExecuteLogicEventCommand(addPlayer);
+            var addPlayer2 = new AddPlayerCommand("321","321");
+            testGame.ExecuteLogicEventCommand(addPlayer);
+            Assert.AreEqual((string)commandArray[1].Payload, "Игрок с ID 321 уже существует");
+            var playerList = (List<GameCore.Player>) commandArray[2].Payload;
             Assert.AreEqual(playerList[0].Id, "321");
             Assert.AreEqual(playerList[0].Name, "123");
         }
@@ -151,6 +169,7 @@ namespace CorovanyTest
             testGame.ExecuteLogicEventCommand(turn1);
             var reset = new InitializeGameStateResetCommand();
             testGame.ExecuteLogicEventCommand(reset);
+            Assert.AreEqual((bool)commandArray[4].Payload, true);
             var addPlayerAfterReset = new AddPlayerCommand("123","321");
             testGame.ExecuteLogicEventCommand(addPlayerAfterReset);
             var playerList = (List<GameCore.Player>) commandArray[5].Payload;

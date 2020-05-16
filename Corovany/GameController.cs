@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Microsoft.AspNetCore.SignalR;
 using System.Web;
-using Corovany.logic;
+using Corovany.Logic;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

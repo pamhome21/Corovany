@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Corovany.logic
+namespace Corovany.Logic
 {
     public class CombatCore
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Corovany.logic
+namespace Corovany.Logic
 {
     public class CharacterCore
     {
