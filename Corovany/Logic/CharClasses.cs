@@ -76,7 +76,7 @@ namespace Corovany.Logic
                     $"Powerful spell that deals 30MP dmg",
                     15, 0, 1, unit =>
                     {
-                        unit.ApplyMpDamage(15);
+                        unit.ApplyMpDamage(30);
                     }),
                 new CharacterCore.Perk("Taunt", "skip_turn",
                     $"Taunts enemy (deals nothing)",

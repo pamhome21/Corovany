@@ -73,9 +73,8 @@ namespace Corovany.Logic
             public CombatCore.PlayerCombatUnit GetUnitFromQueue()
             {
                 var counter = 0;
-                while (counter == 0 || CurrentUnit.Character.OwnerId == null || CurrentUnit.Character.OwnerId != null
-                    && counter < Units.Count)
-                {
+                //while (counter == 0 || CurrentUnit.Character.OwnerId == null && counter < Units.Count)
+                //{
                     CurrentUnit = UnitTurnQueue.Dequeue();
                     counter++;
                     // if (CurrentUnit.Character.Owner != null)
@@ -83,12 +82,12 @@ namespace Corovany.Logic
                     //     ReportInfo($"Ход персонажа {CurrentUnit.Character.Name} игрока {CurrentUnit.Character.Owner.Name}");
                     // }
                     AvailableTargets = Units
-                        .Where(unit => unit!=CurrentUnit)
+                        .Where(unit => unit.State == CombatCore.UnitState.Fine)
                         .ToDictionary(unit => unit.Character.Name);
                     AvailablePerks = CurrentUnit.Character.CharClass.Perks
                         .ToDictionary(perk => perk.Name);
                     UnitTurnQueue.Enqueue(CurrentUnit);
-                }
+                //}
                 return CurrentUnit.Character.OwnerId != null ? CurrentUnit : null;
             }
             
