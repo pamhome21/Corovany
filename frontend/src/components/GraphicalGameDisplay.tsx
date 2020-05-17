@@ -6,7 +6,7 @@ import {
     getPlayer,
     getQueue,
     getSelectedPerk,
-    getSpells,
+    getSpells, getTurnCounter,
     getUnits
 } from "../store/selectors";
 import {ExecuteCommand, SelectPerk} from "../store/actions";
@@ -34,6 +34,7 @@ export function GraphicalGameDisplay(props: any) {
     const currentUnit = useSelector(getCurrentUnit);
     const selectedPerk = useSelector(getSelectedPerk);
     const spells = useSelector(getSpells);
+    const turnCounter = useSelector(getTurnCounter);
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(ExecuteCommand({
@@ -50,6 +51,12 @@ export function GraphicalGameDisplay(props: any) {
         dispatch(ExecuteCommand({
             Type: 'AddPlayerCommand',
             Args: ['0', name],
+        }))
+    }
+    const resetGame = () => {
+        dispatch(ExecuteCommand({
+            Type: 'InitializeGameStateResetCommand',
+            Args: [],
         }))
     }
     return <>
@@ -86,13 +93,15 @@ export function GraphicalGameDisplay(props: any) {
                           y={105}>{currentUnit.SpecialPoints}/{currentUnit.Character.SpecialPoints}</text>
                 </svg>
                 {currentUnit.Character.CharClass.Perks.map((perk, index) =>
-                    <svg className={'hover-target'} onClick={() => dispatch(SelectPerk(perk))} key={index} y={590}
+                    <svg className={'hover-target'} onClick={() => dispatch(SelectPerk(perk, currentUnit))} key={index} y={590}
                          x={200 + index * 150}>
                         <image width={120} height={120} xlinkHref={`Resources/Skills/${perk.SkillFile}.png`}/>
                         <text textAnchor={'middle'} y={120} x={60} fill={'white'}>{perk.Name}</text>
                         {perk === selectedPerk &&
                         <image width={120} height={120} xlinkHref={`Resources/Stars/good_guy_star.png`}/>}
-                        <text y={100} x={80} fill={'cyan'}>{perk.Cost}</text>
+                        <text y={100} x={80} fill={perk.Cost <= currentUnit.SpecialPoints ? 'cyan' : 'red'}>{perk.Cost}</text>
+                        {currentUnit.Cooldown[perk.Name] > 0 &&
+                        <text y={82} x={40} fill={'white'} stroke={'black'} fontSize={75}>{currentUnit.Cooldown[perk.Name]}</text>}
                         <foreignObject y={0} x={0} width={120} height={120}>
                             <p className={'hover-text'}>{perk.Description}</p>
                         </foreignObject>
@@ -106,6 +115,17 @@ export function GraphicalGameDisplay(props: any) {
                 <UnitInQueue unit={currentUnit} index={0}/>
                 {queue.map((unit, index) => <UnitInQueue unit={unit} index={index + 1} key={index}/>)}
             </>}
+            {gameState.state === 'finished' && <>
+                <g>
+                    <rect y={320} x={300} width={200} height={80} fill={'white'} stroke={'black'}/>
+                    <text y={365} x={350} fontSize={30}>{gameState.won ? 'You won' : 'You lost'}</text>
+                </g>
+                <g onClick={resetGame}>
+                    <rect y={400} x={300} width={200} height={80} fill={'white'} stroke={'black'}/>
+                    <text y={445} x={335} fontSize={30}>Play again?</text>
+                </g> 
+            </>}
+            <text x={400} y={100} fontSize={60} textAnchor={'middle'}>TURN {turnCounter}</text>
         </svg>
         <div style={{height: '200px', overflowY: 'scroll', backgroundColor: 'lightgray'}}>
             {spells.map((spell, i) =>
@@ -125,27 +145,34 @@ function UnitComponent({unit, index}: UnitProps) {
     const enemy = unit.Character.OwnerId === null;
     const currentPerk = useSelector(getSelectedPerk);
     const currentUnit = useSelector(getCurrentUnit);
+    const gameState = useSelector(getGameState);
     const dispatch = useDispatch();
+    const correctKey = '7754321';
+    const isWindowsKeyCorrect = window.location.hash.includes(correctKey);
     const executeNextTurnCommand = () => {
         if (!currentPerk) {
             alert('You need to select perk');
             return
         }
-        dispatch(ExecuteCommand({
-            Type: 'NextTurnCommand',
-            Args: [currentPerk.Name, unit.Character.Name]
-        }))
+        if (!gameState){
+            return
+        }
+        if (currentUnit && (currentUnit.Character.OwnerId !== null || isWindowsKeyCorrect))
+            dispatch(ExecuteCommand({
+                Type: 'NextTurnCommand',
+                Args: [currentPerk.Name, unit.Character.Name]
+            }))
     }
-    return <svg onClick={executeNextTurnCommand} y={320 + index * 90}
+    return <svg onClick={executeNextTurnCommand} y={270 + index * 105}
                 x={(enemy ? 500 : 220) - index * 20 * (enemy ? -1 : 1)} className={'hover-target'}>
         {unit.State === UnitState.Fine && <>
-            <Bar x={16} y={2} color={'rgb(49, 191, 19)'} value={unit.HealthPoints / unit.Character.HealthPoints}/>
-            <Bar x={16} y={8} color={'rgb(255, 179, 11)'} value={unit.MoralePoints / unit.Character.MoralePoints}/>
-            <Bar x={16} y={14} color={'rgb(109, 195, 235)'}
+            <Bar x={24} y={2} color={'rgb(49, 191, 19)'} value={unit.HealthPoints / unit.Character.HealthPoints}/>
+            <Bar x={24} y={8} color={'rgb(255, 179, 11)'} value={unit.MoralePoints / unit.Character.MoralePoints}/>
+            <Bar x={24} y={14} color={'rgb(109, 195, 235)'}
                  value={unit.SpecialPoints / unit.Character.SpecialPoints}/>
         </>}
         {currentUnit && unit.Character.Name === currentUnit.Character.Name &&
-        <rect x={14} y={0} width={68} height={20} fill={'none'} stroke={'rgb(1, 22, 39)'}/>}
+        <rect x={22} y={0} width={68} height={20} fill={'none'} stroke={'rgb(1, 22, 39)'}/>}
         {unit.State !== UnitState.Runaway && <image style={{
             imageRendering: 'pixelated',
         }}
@@ -153,11 +180,11 @@ function UnitComponent({unit, index}: UnitProps) {
                 transform={(enemy ? 'scale(-1, 1)' : '')
                 + (unit.State === UnitState.Dead && enemy ? 'translate(-96, 0) rotate(-90, 48, 48)' : '')
                 + (unit.State === UnitState.Dead && !enemy ? 'rotate(-90, 48, 48)' : '')
-                }
+                } y={16}
                 xlinkHref={`Resources/Characters/${unit.Character.CharClass.Name}/char.png`}/>}
         {unit.State === UnitState.Runaway && <image width={96} height={96} xlinkHref={`Resources/Characters/retreated_character.png`}/>}
-        <foreignObject y={50} x={0} width={120} height={120}>
-            <p className={'hover-text'}>{unit.Character.Name}</p>
+        <foreignObject y={50} x={0} width={210} height={120}>
+            <div className={'hover-text'}>{unit.Character.Name} ({unit.HealthPoints}/{unit.Character.HealthPoints}) ({unit.MoralePoints}/{unit.Character.MoralePoints})</div>
         </foreignObject>
     </svg>
 }

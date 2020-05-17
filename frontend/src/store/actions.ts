@@ -1,5 +1,5 @@
 import {ActionType} from "./ActionType";
-import {Perk} from "../interfaces/GameInterfaces";
+import {Perk, Unit} from "../interfaces/GameInterfaces";
 
 export interface Action {
     type: ActionType
@@ -24,7 +24,7 @@ export const AddCommand: (command: string, commandName: string) => Action = (com
     }
 })
 
-export const SelectPerk: (payload: Perk) => Action = (payload: Perk) => ({
+export const SelectPerk: (perk: Perk, unit: Unit) => Action = (perk: Perk, unit: Unit) => ({
     type: ActionType.SelectPerk,
-    payload
+    payload: {perk, unit}
 })

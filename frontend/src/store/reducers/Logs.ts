@@ -20,6 +20,8 @@ export default function(state = initialState, action: Action): LogState{
                 commands: [...state.commands, `To server: ${JSON.stringify(action.payload)}`]
             };
         case ActionType.AddCommand:
+            if (action.payload.commandName === 'Reset')
+                return initialState
             return {
                 ...state,
                 commands: [...state.commands,

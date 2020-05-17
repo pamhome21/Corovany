@@ -11,6 +11,7 @@ export interface ApplicationState {
     players: Player[]
     characters: Character[]
     won: boolean
+    turnCounter: number
 }
 
 const initialState: ApplicationState = {
@@ -21,6 +22,7 @@ const initialState: ApplicationState = {
     units: [],
     queue: [],
     won: false,
+    turnCounter: 0,
 }
 
 export default function (state = initialState, action: Action): ApplicationState {
@@ -57,10 +59,11 @@ export default function (state = initialState, action: Action): ApplicationState
                 case('BattleFieldUpdated'):
                     return {
                         ...state,
-                        state: 'combatReady',
+                        state: state.state !== 'finished' ? 'combatReady' : "finished",
                         currentUnit: commandValue.CurrentUnit,
                         units: commandValue.Units,
                         queue: commandValue.Queue,
+                        turnCounter: commandValue.TurnCounter,
                     }
                 case('BattleEnd'):
                     return {
@@ -69,7 +72,7 @@ export default function (state = initialState, action: Action): ApplicationState
                         won: commandValue,
                     }
                 case('FrontendError'):
-                    alert(action.payload.newCommand);
+                    // alert(action.payload.newCommand);
                     return state
                 case('Reset'):
                     return initialState

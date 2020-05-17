@@ -39,6 +39,9 @@ export interface Unit {
     SpecialPoints: number
     Initiative: number
     State: UnitState
+    Cooldown: {
+        [key: string]: number
+    }
 }
 
 export enum UnitState {

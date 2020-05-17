@@ -20,3 +20,5 @@ export const getGameState = (store: RootState) => ({
 });
 
 export const getSelectedPerk = (store: RootState) => store.Control.selectedPerk;
+
+export const getTurnCounter = (store: RootState) => store.GameState.turnCounter;
