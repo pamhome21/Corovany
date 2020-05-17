@@ -151,7 +151,7 @@ function UnitComponent({unit, index}: UnitProps) {
     const isWindowsKeyCorrect = window.location.hash.includes(correctKey);
     const executeNextTurnCommand = () => {
         if (!currentPerk) {
-            alert('You need to select perk');
+            // alert('You need to select perk');
             return
         }
         if (!gameState){
