@@ -10,6 +10,10 @@ namespace Corovany.Logic
     {
         private const int MoneyOnStart = 500;
         private const int MaxActiveChars = 3;
+        
+        /// <summary>
+        ///     Every human is treated via it's Player instance, and treats the same.
+        /// </summary>
         public class Player
         {
             public string Name { get; set; }
@@ -42,6 +46,10 @@ namespace Corovany.Logic
 
         public class Game
         {
+            /// <summary>
+            ///     Game provides Player control of the game. Contains all the information about
+            ///     the game. 
+            /// </summary>
             public Dictionary<string, Player> Players { get; set; }
             public List<Enemy> Enemies { get; set; }
             public List<CombatCore.PlayerCombatUnit> Units { get; set; }
@@ -125,6 +133,7 @@ namespace Corovany.Logic
         
         public class UnitComparer : IComparer<CombatCore.PlayerCombatUnit>
         {
+            
             public int Compare(CombatCore.PlayerCombatUnit first, CombatCore.PlayerCombatUnit second)
             {
                 if (first.Initiative < second.Initiative)

@@ -9,6 +9,10 @@ namespace Corovany.Logic
         private const double LvlFactor = 0.66;
         public class CharacterClass
         {
+            /// <summary>
+            ///     Character structure used to create characters, based
+            ///     on templates from CharClasses 
+            /// </summary>
             public string Name { get; }
             public int HealthPoints { get; }
             public int MoralePoints { get; }
@@ -83,6 +87,9 @@ namespace Corovany.Logic
 
         public class Perk
         {
+            /// <summary>
+            /// Every perk (skill) base class
+            /// </summary>
             public string Name { get; }
             public string SkillFile { get; }
             public string Description { get; }

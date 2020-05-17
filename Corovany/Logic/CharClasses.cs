@@ -2,8 +2,14 @@
 
 namespace Corovany.Logic
 {
+    /// <summary>
+    ///     Container for every unit's templates implemented in game.
+    ///     Everyone of them has it's own pack of skills, max Health,
+    ///     Morale and Special points.
+    /// </summary>
     public class CharClasses
     {
+        
         public interface ICharClass
         {
             public static List<CharacterCore.Perk> Perks;

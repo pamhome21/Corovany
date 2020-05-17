@@ -26,8 +26,13 @@ namespace Corovany.Logic
             public void HealMp(int hp);
         }
 
+        /// <summary>
+        ///     Structure implementing every unit on the field.
+        ///     Here are defined basic units' operations methods
+        /// </summary>
         public class PlayerCombatUnit: ICombatUnitPattern
         {
+            
             public CharacterCore.Character Character { get; set; }
             public int HealthPoints { get; private set; }
             public int MoralePoints { get; private set; }
