@@ -99,10 +99,9 @@ namespace Corovany.Logic
                 Cooldown[perk.Name] = perk.Cooldown;
                 DecreaseSp(perk.Cost);
                 Initiative += 100;
-                DecreaseCooldown();
             }
 
-            public bool CanCastPerk(CharacterCore.Perk perk, ICombatUnitPattern target)
+            public bool CanCastPerk(CharacterCore.Perk perk)
             {
                 return perk.LevelToUnlock <= Character.Level
                         && Cooldown[perk.Name] == 0 && perk.Cost <= SpecialPoints;
@@ -110,9 +109,14 @@ namespace Corovany.Logic
 
             public void DecreaseCooldown()
             {
-                foreach (var perkName in Cooldown.Keys
-                    .Where(perkName => Cooldown[perkName] > 0))
-                    Cooldown[perkName]--;
+                var keys = new List<string>(Cooldown.Keys);
+                foreach (var key in keys)
+                {
+                    if (Cooldown[key]>0)
+                    {
+                        Cooldown[key]--;
+                    }
+                }
             }
         }
     }

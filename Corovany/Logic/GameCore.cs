@@ -116,7 +116,7 @@ namespace Corovany.Logic
                 {
                     TurnCounter++;
                     foreach (var unit in UnitTurnQueue)
-                        unit.IncreaseSp(unit.Character.SpecialPoints/10);
+                        unit.IncreaseSp(unit.Character.SpecialPoints/4);
                     UnitCounter = 0;
                 }
                 UnitCounter++;

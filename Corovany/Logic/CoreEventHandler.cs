@@ -78,7 +78,6 @@ namespace Corovany.Logic
 
     public class InitializeGameCommand : ICommand
     {
-        //TODO
         public void ExecuteCommand(GameCore.Game game)
         {
             foreach (var (_, player) in game.Players)
@@ -148,8 +147,11 @@ namespace Corovany.Logic
                 return;
             }
 
-            if (game.CurrentUnit.CanCastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]))
+            if (game.CurrentUnit.CanCastPerk(game.AvailablePerks[PerkKey]))
+            {
                 game.CurrentUnit.CastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]);
+                game.CurrentUnit.DecreaseCooldown();
+            }
             else
             {
                 game.ReportInfo(new FrontendError($"Невозможно применить способность {PerkKey}"));

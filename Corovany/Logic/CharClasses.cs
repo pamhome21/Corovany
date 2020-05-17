@@ -16,7 +16,7 @@ namespace Corovany.Logic
             {
                 new CharacterCore.Perk("Power Blade", "human_skill_power_blade",
                     $"Powerful strike that deals 50HP dmg",
-                    20, 0, 1, unit =>
+                    20, 2, 1, unit =>
                 {
                     unit.ApplyHpDamage(50);
                 }),
@@ -116,8 +116,8 @@ namespace Corovany.Logic
                     {
                         unit.ApplyMpDamage(45);
                     }),
-                new CharacterCore.Perk("Skip Turn", "skip_turn",
-                    $"Skip turn",
+                new CharacterCore.Perk("Taunt", "skip_turn",
+                    $"Taunts enemy (deals nothing)",
                     0,0,0, unit => {}
                 )
             };
