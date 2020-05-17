@@ -15,7 +15,7 @@ namespace Corovany.Logic
             private static readonly List<CharacterCore.Perk> Perks = new List<CharacterCore.Perk>()
             {
                 new CharacterCore.Perk("Power Blade", "human_skill_power_blade",
-                    $"Powerful strike that deals 50HP dmg",
+                    $"Powerful strike that deals 50HP dmg, CD: 1 Turn",
                     20, 2, 1, unit =>
                 {
                     unit.ApplyHpDamage(50);
@@ -91,6 +91,18 @@ namespace Corovany.Logic
         {
             private static readonly List<CharacterCore.Perk> Perks = new List<CharacterCore.Perk>()
             {
+                new CharacterCore.Perk("Insult", "hobbit_skill_insult_dude",
+                    $"Insults enemy and deals 10MP dmg",
+                    5,0,1, unit =>
+                    {
+                        unit.ApplyMpDamage(10);
+                    }),
+                new CharacterCore.Perk("Throw Stone", "hobbit_skill_stone_rain",
+                    $"Throws small stones that deal 10HP dmg, CD: 1 Turn",
+                    5, 2, 1, unit =>
+                    {
+                        unit.ApplyHpDamage(10);
+                    }),
                 new CharacterCore.Perk("Taunt", "skip_turn",
                     $"Taunts enemy (deals nothing)",
                     0,0,0, unit => {}
