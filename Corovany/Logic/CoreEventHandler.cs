@@ -6,6 +6,11 @@ using Corovany.FrontendCommands;
 
 namespace Corovany.Logic
 {
+    /// <summary>
+    ///      Предоставляет делегат для общения с фронтэндом
+    ///      Содержит в экземпляр экранированной от фронтэнда игры
+    ///      Обладает методом выполнения команд, который применет их к игре
+    /// </summary>
     public class GameLogicHandler
     {
         private GameCore.Game Game { get; }
@@ -20,12 +25,19 @@ namespace Corovany.Logic
             command.ExecuteCommand(Game);
         }
     }
-
+    
+    /// <summary>
+    ///      Интерфес команды
+    ///      Содержит метод исполнения команды
+    /// </summary>
     public interface ICommand
     {
         public void ExecuteCommand(GameCore.Game game);
     }
 
+    /// <summary>
+    ///      Команда перезапуска игры
+    /// </summary>
     public class InitializeGameStateResetCommand : ICommand
     {
         public void ExecuteCommand(GameCore.Game game)
@@ -35,6 +47,10 @@ namespace Corovany.Logic
         }
     }
 
+    /// <summary>
+    ///      Команда запроса полного состояния игры
+    ///      Уведомляет фронтэнд о текущем состоянии игры
+    /// </summary>
     public class ReceiveFullDataStateCommand : ICommand
     {
         public void ExecuteCommand(GameCore.Game game)
@@ -53,6 +69,10 @@ namespace Corovany.Logic
         }
     }
 
+    /// <summary>
+    ///      Команда добавления игрока
+    ///      Позволяет фронтэнду добавить нового игрока
+    /// </summary>
     public class AddPlayerCommand : ICommand
     {
         private (string Id, string Name) PlayerData { get; set; }
@@ -77,6 +97,10 @@ namespace Corovany.Logic
         }
     }
 
+    /// <summary>
+    ///      Команда инициализации игры
+    ///      Инициализирует всех игроков и создаёт ботов
+    /// </summary>
     public class InitializeGameCommand : ICommand
     {
         public void ExecuteCommand(GameCore.Game game)
@@ -113,6 +137,11 @@ namespace Corovany.Logic
         }
     }
 
+    /// <summary>
+    ///      Команда инициализации боя
+    ///      Создаёт очередь юнитов, делает текущим юнитом первого юнита из очереди
+    ///      Сообщает фронтэнду информацию о юнитах на поле боя
+    /// </summary>
     public class InitializeCombatSystemCommand : ICommand
     {
         public void ExecuteCommand(GameCore.Game game)
@@ -123,6 +152,12 @@ namespace Corovany.Logic
         }
     }
 
+    /// <summary>
+    ///      Команда следующего хода
+    ///      Применяет переданную ей способность к переданной цели
+    ///      Осуществляет ротацию очереди и её перепросчёт
+    ///      Сообщает фронтэнду информацию о юнитах на поле боя
+    /// </summary>
     public class NextTurnCommand : ICommand
     {
         private string PerkKey { get; set; }
