@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Corovany.Logic
 {
@@ -18,7 +19,7 @@ namespace Corovany.Logic
             public int SpecialPoints { get; }
             public int Initiative { get; set; }
             public UnitState State { get; }
-            public Dictionary<CharacterCore.Perk, int> Cooldown { get; }
+            public Dictionary<string, int> Cooldown { get; }
             public void ApplyHpDamage(int dmg);
             public void ApplyMpDamage(int dmg);
             public void HealHp(int hp);
@@ -33,36 +34,52 @@ namespace Corovany.Logic
             public int SpecialPoints { get; private set; }
             public int Initiative { get; set; }
             public UnitState State { get; private set; }
-            public Dictionary<CharacterCore.Perk, int> Cooldown { get; } = new Dictionary<CharacterCore.Perk, int>();
+            public Dictionary<string, int> Cooldown { get; } = new Dictionary<string, int>();
 
             public void ApplyHpDamage(int dmg)
             {
-                HealthPoints-= dmg;
+                HealthPoints = HealthPoints - dmg <= 0 ? 0 : HealthPoints - dmg;
                 if (HealthPoints <= 0)
                     State = UnitState.Dead;
             }
 
             public void ApplyMpDamage(int dmg)
             {
-                MoralePoints-= dmg;
+                MoralePoints = MoralePoints - dmg <= 0 ? 0 : MoralePoints - dmg;
                 if (MoralePoints <= 0 && State != UnitState.Dead)
                     State = UnitState.Escaped;
             }
 
             public void HealHp(int hp)
             {
-                HealthPoints = HealthPoints + hp >= Character.HealthPoints ? Character.HealthPoints : HealthPoints + hp;
+                HealthPoints = HealthPoints + hp >= Character.HealthPoints 
+                    ? Character.HealthPoints 
+                    : HealthPoints + hp;
             }
             
             public void HealMp(int mp)
             {
-                MoralePoints = MoralePoints + mp >= Character.MoralePoints ? Character.MoralePoints : MoralePoints + mp;
+                MoralePoints = MoralePoints + mp >= Character.MoralePoints 
+                    ? Character.MoralePoints 
+                    : MoralePoints + mp;
+            }
+
+            public void IncreaseSp(int sp)
+            {
+                SpecialPoints = SpecialPoints + sp >= Character.SpecialPoints
+                    ? Character.SpecialPoints
+                    : SpecialPoints + sp;
+            }
+
+            public void DecreaseSp(int sp)
+            {
+                SpecialPoints = SpecialPoints - sp <= 0 ? 0 : SpecialPoints - sp;
             }
 
             private void GenerateCooldown()
             {
                 foreach (var perk in Character.CharClass.Perks)
-                    Cooldown.Add(perk, 0);
+                    Cooldown.Add(perk.Name, 0);
             }
 
             public PlayerCombatUnit(CharacterCore.Character character)
@@ -78,12 +95,24 @@ namespace Corovany.Logic
 
             public void CastPerk(CharacterCore.Perk perk, ICombatUnitPattern target)
             {
-                if (perk.LevelToUnlock <= Character.Level && Cooldown[perk]==0)
-                {
-                    perk.Ability(target);
-                    Cooldown[perk] = perk.Cooldown;
-                }
+                perk.Ability(target);
+                Cooldown[perk.Name] = perk.Cooldown;
+                DecreaseSp(perk.Cost);
                 Initiative += 100;
+                DecreaseCooldown();
+            }
+
+            public bool CanCastPerk(CharacterCore.Perk perk, ICombatUnitPattern target)
+            {
+                return perk.LevelToUnlock <= Character.Level
+                        && Cooldown[perk.Name] == 0 && perk.Cost <= SpecialPoints;
+            }
+
+            public void DecreaseCooldown()
+            {
+                foreach (var perkName in Cooldown.Keys
+                    .Where(perkName => Cooldown[perkName] > 0))
+                    Cooldown[perkName]--;
             }
         }
     }

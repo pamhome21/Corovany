@@ -46,6 +46,8 @@ namespace Corovany.Logic
             public List<Enemy> Enemies { get; set; }
             public List<CombatCore.PlayerCombatUnit> Units { get; set; }
             public Queue<CombatCore.PlayerCombatUnit> UnitTurnQueue { get; set; }
+            public int TurnCounter { get; set; } = 1;
+            public int UnitCounter { get; set; }
             public Action<IFrontendCommand> ReportInfo { get; set; }
             public CombatCore.PlayerCombatUnit CurrentUnit { get; set; }
             public Dictionary<string,CombatCore.PlayerCombatUnit> AvailableTargets { get; set; }
@@ -65,6 +67,8 @@ namespace Corovany.Logic
                 Enemies = new List<Enemy>();
                 Units = new List<CombatCore.PlayerCombatUnit>();
                 UnitTurnQueue = null;
+                TurnCounter = 1;
+                UnitCounter = 0;
                 CurrentUnit = null;
                 AvailableTargets = null;
                 AvailablePerks = null;
@@ -87,6 +91,7 @@ namespace Corovany.Logic
                     AvailablePerks = CurrentUnit.Character.CharClass.Perks
                         .ToDictionary(perk => perk.Name);
                     UnitTurnQueue.Enqueue(CurrentUnit);
+                    IncreaseSpecPoints();
                 //}
                 return CurrentUnit.Character.OwnerId != null ? CurrentUnit : null;
             }
@@ -103,6 +108,18 @@ namespace Corovany.Logic
                     UnitTurnQueue.Enqueue(unit);
                 }
                 // ReportInfo("Очередь ходов юнитов перепросчитана");
+            }
+
+            public void IncreaseSpecPoints()
+            {
+                if (UnitCounter >= UnitTurnQueue.Count)
+                {
+                    TurnCounter++;
+                    foreach (var unit in UnitTurnQueue)
+                        unit.IncreaseSp(unit.Character.SpecialPoints/10);
+                    UnitCounter = 0;
+                }
+                UnitCounter++;
             }
         }
         

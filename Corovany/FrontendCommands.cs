@@ -28,12 +28,14 @@ namespace Corovany
 
             public BattleFieldUpdated(CombatCore.PlayerCombatUnit currentUnit,
                 IReadOnlyList<CombatCore.PlayerCombatUnit> units,
-                Queue<CombatCore.PlayerCombatUnit> queue) =>
-                Payload = new BattleFieldPayload()
+                Queue<CombatCore.PlayerCombatUnit> queue,
+                int turnCounter) =>
+                Payload = new BattleFieldPayload
                     {
                         CurrentUnit = currentUnit,
                         Units = units,
-                        Queue = new List<CombatCore.PlayerCombatUnit>(queue)
+                        Queue = new List<CombatCore.PlayerCombatUnit>(queue),
+                        TurnCounter = turnCounter
                     };
         }
         
@@ -42,6 +44,8 @@ namespace Corovany
             public CombatCore.PlayerCombatUnit CurrentUnit;
             public IReadOnlyList<CombatCore.PlayerCombatUnit> Units;
             public IReadOnlyList<CombatCore.PlayerCombatUnit> Queue;
+            public int TurnCounter;
+
         }
 
         public class BattleEnd : IFrontendCommand

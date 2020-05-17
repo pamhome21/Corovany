@@ -44,7 +44,7 @@ namespace Corovany.Logic
                 .SelectMany(player => player.Value.CurrentChars)
                 .ToList()));
             if (game.CurrentUnit == null) return;
-            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue, game.TurnCounter));
             if (NextTurnCommand.IsPlayerDead(game.Units))
                 game.ReportInfo(new BattleEnd(false));
             if (NextTurnCommand.IsEnemyDead(game.Units))
@@ -119,7 +119,7 @@ namespace Corovany.Logic
         {
             game.FillQueueWithUnits();
             game.GetUnitFromQueue();
-            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue, game.TurnCounter));
         }
     }
 
@@ -148,26 +148,32 @@ namespace Corovany.Logic
                 return;
             }
 
-            game.CurrentUnit.CastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]);
+            if (game.CurrentUnit.CanCastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]))
+                game.CurrentUnit.CastPerk(game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]);
+            else
+            {
+                game.ReportInfo(new FrontendError($"Невозможно применить способность {PerkKey}"));
+                return;
+            }
             game.ReportInfo(new FrontendSpellLog(game.CurrentUnit, 
                 game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]));
             game.FillQueueWithUnits();
             if (IsPlayerDead(game.Units))
             {
-                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue, game.TurnCounter));
                 game.ReportInfo(new BattleEnd(false));
                 return;
             }
 
             if (IsEnemyDead(game.Units))
             {
-                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue, game.TurnCounter));
                 game.ReportInfo(new BattleEnd(true));
                 return;
             }
             
             game.GetUnitFromQueue();
-            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue, game.TurnCounter));
         }
 
         public static bool IsPlayerDead(List<CombatCore.PlayerCombatUnit> units)
