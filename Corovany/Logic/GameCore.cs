@@ -73,7 +73,8 @@ namespace Corovany.Logic
             public CombatCore.PlayerCombatUnit GetUnitFromQueue()
             {
                 var counter = 0;
-                while (counter == 0 || CurrentUnit.Character.OwnerId == null && counter < Units.Count)
+                while (counter == 0 || CurrentUnit.Character.OwnerId == null || CurrentUnit.Character.OwnerId != null
+                    && counter < Units.Count)
                 {
                     CurrentUnit = UnitTurnQueue.Dequeue();
                     counter++;

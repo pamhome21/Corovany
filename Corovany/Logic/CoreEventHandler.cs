@@ -39,7 +39,8 @@ namespace Corovany.Logic
         public void ExecuteCommand(GameCore.Game game)
         {
             game.ReportInfo(new PlayerAdded(game.Players.Values.ToList()));
-            game.ReportInfo(new GameInitialized(game.Players
+            if (game.Players.Count!=0)
+                game.ReportInfo(new GameInitialized(game.Players
                 .SelectMany(player => player.Value.CurrentChars)
                 .ToList()));
             if (game.CurrentUnit == null) return;
@@ -83,28 +84,31 @@ namespace Corovany.Logic
             foreach (var (_, player) in game.Players)
             {
                 player.CurrentChars[0] = new CharacterCore.Character("Kek", CharClasses.Human.Class, 1, player);
-                player.CurrentChars[0].HealthPoints = 25;
                 player.CurrentChars[1] =
-                    new CharacterCore.Character("SlowKek", CharClasses.Human.Class, 1, player);
-                player.CurrentChars[1].Initiative = 20;
+                    new CharacterCore.Character("Tlatelolko", CharClasses.Magician.Class, 1, player);
+                player.CurrentChars[2] =
+                    new CharacterCore.Character("Sherguhseiuhg", CharClasses.Elf.Class, 1, player);
                 game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[0]));
                 game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[1]));
+                game.Units.Add(new CombatCore.PlayerCombatUnit(player.CurrentChars[2]));
             }
 
             foreach (var enemy in game.Enemies)
             {
-                enemy.EnemyChars.Add(new CharacterCore.Character("KekBot", CharClasses.Human.Class, 1));
-                enemy.EnemyChars[0].HealthPoints = 25;
-                enemy.EnemyChars.Add(new CharacterCore.Character("SlowKekBot", CharClasses.Human.Class, 1));
-                enemy.EnemyChars[1].HealthPoints = 50;
-                enemy.EnemyChars[1].Initiative = 25;
+                enemy.EnemyChars.Add(new CharacterCore.Character("Biba", CharClasses.Hobbit.Class, 1));
+                enemy.EnemyChars.Add(new CharacterCore.Character("Shrek", CharClasses.Ciclopus.Class, 1));
+                enemy.EnemyChars.Add(new CharacterCore.Character("Boba", CharClasses.Hobbit.Class, 1));
                 game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[0]));
                 game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[1]));
+                game.Units.Add(new CombatCore.PlayerCombatUnit(enemy.EnemyChars[2]));
             }
 
-            game.ReportInfo(new GameInitialized(game.Players
-                .SelectMany(player => player.Value.CurrentChars)
-                .ToList()));
+            if (game.Players.Count!=0)
+                game.ReportInfo(new GameInitialized(game.Players
+                    .SelectMany(player => player.Value.CurrentChars)
+                    .ToList()));
+            else
+                game.ReportInfo(new FrontendError("Игроки отсутствуют"));
         }
     }
 
