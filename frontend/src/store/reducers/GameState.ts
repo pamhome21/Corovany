@@ -1,6 +1,7 @@
 import {ActionType} from "../ActionType";
 import {Action} from "../actions";
 import {SendMessage} from "../../sockets/sockets";
+import {Character, Player, Unit} from "../../interfaces/GameInterfaces";
 
 export interface ApplicationState {
     state: 'uninitialized' | 'stateReady' | 'combatReady' | 'finished'
@@ -56,9 +57,8 @@ export default function (state = initialState, action: Action): ApplicationState
                         won: commandValue,
                     }
                 case('FrontendError'):
-                    return {
-                        ...state,
-                    }
+                    alert(action.payload.newCommand);
+                    return state
                 case('Reset'):
                     return initialState
                 default:
@@ -67,53 +67,4 @@ export default function (state = initialState, action: Action): ApplicationState
         default:
             return state;
     }
-}
-
-export interface Player {
-    Name: string
-    Id: string
-}
-
-export interface Character {
-    Name: string
-    CharClass: CharacterClass
-    Level: number
-    Initiative: number
-    HealthPoints: number
-    MoralePoints: number
-    SpecialPoints: number
-    OwnerId: string
-}
-
-export interface CharacterClass {
-    Name: string
-    HealthPoints: number
-    MoralePoints: number
-    SpecialPoints: number
-    Initiative: number
-    Perks: Perk[]
-}
-
-export interface Perk {
-    Name: string
-    SkillFile: string
-    Description: string
-    Cost: number
-    Cooldown: number
-    LevelToUnlock: number
-}
-
-export interface Unit {
-    Character: Character
-    HealthPoints: number
-    MoralePoints: number
-    SpecialPoints: number
-    Initiative: number
-    State: UnitState
-}
-
-export enum UnitState {
-    Fine = 0,
-    Alive = 1,
-    Dead = 2,
 }

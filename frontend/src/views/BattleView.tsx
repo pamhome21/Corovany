@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getCommands, getSpells} from "../store/selectors";
+import {getSpells} from "../store/selectors";
 import {ExecuteCommand} from "../store/actions";
 import {TextGameDisplay} from "../components/TextGameDisplay";
 import {GraphicalGameDisplay} from "../components/GraphicalGameDisplay";

@@ -1,7 +1,9 @@
 import {combineReducers} from "redux";
-import CommandsList from "./CommandsList";
+import GameState from "./GameState";
 import Logs from "./Logs"
+import Control from "./Control";
+console.log(GameState);
 
-export const rootReducer = combineReducers({CommandsList, Logs});
+export const rootReducer = combineReducers({GameState, Logs, Control});
 
 export type RootState = ReturnType<typeof rootReducer>;
