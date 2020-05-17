@@ -1,5 +1,5 @@
 import {ActionType} from "../ActionType";
-import {Action} from "../actions";
+import {Action, ExecuteCommand} from "../actions";
 import {SendMessage} from "../../sockets/sockets";
 import {Character, Player, Unit} from "../../interfaces/GameInterfaces";
 
@@ -32,11 +32,23 @@ export default function (state = initialState, action: Action): ApplicationState
             const commandValue = JSON.parse(action.payload.newCommand);
             switch (action.payload.commandName) {
                 case('PlayerAdded'):
+                    if (commandValue.length > 0 && state.state === 'uninitialized'){
+                        SendMessage(JSON.stringify({
+                            Type: 'InitializeGameCommand',
+                            Args: [],
+                        }));
+                    }
                     return {
                         ...state,
                         players: commandValue,
                     }
                 case('GameInitialized'):
+                    if (state.state === 'uninitialized'){
+                        SendMessage(JSON.stringify({
+                            Type: 'InitializeCombatSystemCommand',
+                            Args: [],
+                        }))
+                    }
                     return {
                         ...state,
                         state: 'stateReady',

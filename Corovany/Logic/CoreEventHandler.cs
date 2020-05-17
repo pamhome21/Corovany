@@ -83,6 +83,7 @@ namespace Corovany.Logic
         {
             foreach (var (_, player) in game.Players)
             {
+                if (player.CurrentChars[0] != null) return;
                 player.CurrentChars[0] = new CharacterCore.Character("Kek", CharClasses.Human.Class, 1, player);
                 player.CurrentChars[1] =
                     new CharacterCore.Character("Tlatelolko", CharClasses.Magician.Class, 1, player);

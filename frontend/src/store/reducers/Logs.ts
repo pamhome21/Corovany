@@ -1,9 +1,10 @@
 import {Action} from "../actions";
 import {ActionType} from "../ActionType";
+import {Perk, Unit} from "../../interfaces/GameInterfaces";
 
 interface LogState {
     commands: string[]
-    spellLog: string[]
+    spellLog: combatAction[]
 }
 
 const initialState: LogState = {
@@ -22,11 +23,17 @@ export default function(state = initialState, action: Action): LogState{
             return {
                 ...state,
                 commands: [...state.commands,
-                    `From server(${action.payload.commandName}): ${JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)}`],
+                    `From server(${action.payload.commandName})`],
                 spellLog: action.payload.commandName === 'FrontendSpellLog' ?
-                    [...state.spellLog, JSON.stringify(JSON.parse(action.payload.newCommand), null, 4)] : state.spellLog,
+                    [...state.spellLog, JSON.parse(action.payload.newCommand) as combatAction] : state.spellLog,
             }
         default:
             return state
     }
 } 
+
+interface combatAction{
+    CurrentUnit: Unit
+    Perk: Perk
+    Target: Unit
+}

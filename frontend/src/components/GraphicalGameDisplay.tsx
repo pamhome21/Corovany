@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {
-    // getCharacters,
     getCurrentUnit,
     getGameState,
     getPlayer,
     getQueue,
     getSelectedPerk,
+    getSpells,
     getUnits
 } from "../store/selectors";
 import {ExecuteCommand, SelectPerk} from "../store/actions";
@@ -33,6 +33,7 @@ export function GraphicalGameDisplay(props: any) {
     const queue = useSelector(getQueue);
     const currentUnit = useSelector(getCurrentUnit);
     const selectedPerk = useSelector(getSelectedPerk);
+    const spells = useSelector(getSpells);
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(ExecuteCommand({
@@ -40,19 +41,38 @@ export function GraphicalGameDisplay(props: any) {
             Args: [],
         }))
     }, [])
-
+    const beginGame = () => {
+        const name = prompt('Your name?');
+        if (!name) {
+            alert('Need name');
+            return
+        }
+        dispatch(ExecuteCommand({
+            Type: 'AddPlayerCommand',
+            Args: ['0', name],
+        }))
+    }
     return <>
-        <svg height={850} width={800}>
+        <svg height={720} width={800}>
             <image xlinkHref={'Resources/Panels/top_panel.png'}/>
             <image y={50} xlinkHref={'Resources/Stages/desert_map.png'}/>
             <image transform={'scale(1, 0.6)'} y={600 * (1 / 0.6)} xlinkHref={'Resources/Panels/bottom_panel.png'}/>
-
+            {gameState.state === 'uninitialized' && <>
+                <g onClick={beginGame}>
+                    <rect y={320} x={300} width={200} height={80} fill={'white'} stroke={'black'}/>
+                    <text y={365} x={335} fontSize={30}>Start game</text>
+                </g>
+            </>}
             {player && <>
                 <text textAnchor={'end'} x={800 - 15} y={20} fill={'white'}>Player name: {player.Name}</text>
                 <text textAnchor={'end'} x={800 - 15} y={40} fill={'lightgray'}>ID: {player.Id}</text>
             </>}
 
             {(gameState.state === 'combatReady' || gameState.state === 'finished') && currentUnit && <>
+                {units.filter(u => u.Character.OwnerId !== null).map((unit, index) =>
+                    <UnitComponent unit={unit} key={index} index={index}/>)}
+                {units.filter(u => u.Character.OwnerId === null).map((unit, index) =>
+                    <UnitComponent unit={unit} key={index} index={index}/>)}
                 <svg y={600}>
                     <image width={128} height={128}
                            xlinkHref={`Resources/Characters/${currentUnit.Character.CharClass.Name}/prev.png`}/>
@@ -80,16 +100,19 @@ export function GraphicalGameDisplay(props: any) {
                 {new Array(4 - currentUnit.Character.CharClass.Perks.length).fill(0).map((e, index) =>
                     <svg key={index} y={590} x={200 + (currentUnit.Character.CharClass.Perks.length + index) * 150}>
                         <image width={120} height={120} xlinkHref={`Resources/Skills/locked_skill.png`}/>
-                    </svg>)}
-                {units.filter(u => u.Character.OwnerId !== null).map((unit, index) =>
-                    <UnitComponent unit={unit} key={index} index={index}/>)}
-                {units.filter(u => u.Character.OwnerId === null).map((unit, index) =>
-                    <UnitComponent unit={unit} key={index} index={index}/>)}
+                    </svg>
+                )}
                 <rect width={50} height={50} fill={'none'} stroke={'black'}/>
                 <UnitInQueue unit={currentUnit} index={0}/>
                 {queue.map((unit, index) => <UnitInQueue unit={unit} index={index + 1} key={index}/>)}
             </>}
         </svg>
+        <div style={{height: '200px', overflowY: 'scroll', backgroundColor: 'lightgray'}}>
+            {spells.map((spell, i) =>
+                <p key={i}>{spell.CurrentUnit.Character.Name} used
+                    ability {spell.Perk.Name} to {spell.Target.Character.Name} ({spell.Perk.Description})</p>)}
+            {gameState.state === 'combatReady' && <audio controls loop autoPlay src={'Resources/Audio/bgm.webm'}/>}
+        </div>
     </>
 }
 
@@ -115,21 +138,24 @@ function UnitComponent({unit, index}: UnitProps) {
     }
     return <svg onClick={executeNextTurnCommand} y={320 + index * 90}
                 x={(enemy ? 500 : 220) - index * 20 * (enemy ? -1 : 1)} className={'hover-target'}>
-        <Bar x={16} y={2} color={'rgb(49, 191, 19)'} value={unit.HealthPoints / unit.Character.HealthPoints}/>
-        <Bar x={16} y={8} color={'rgb(255, 179, 11)'} value={unit.MoralePoints / unit.Character.MoralePoints}/>
-        <Bar x={16} y={14} color={'rgb(109, 195, 235)'} value={unit.SpecialPoints / unit.Character.SpecialPoints}/>
+        {unit.State === UnitState.Fine && <>
+            <Bar x={16} y={2} color={'rgb(49, 191, 19)'} value={unit.HealthPoints / unit.Character.HealthPoints}/>
+            <Bar x={16} y={8} color={'rgb(255, 179, 11)'} value={unit.MoralePoints / unit.Character.MoralePoints}/>
+            <Bar x={16} y={14} color={'rgb(109, 195, 235)'}
+                 value={unit.SpecialPoints / unit.Character.SpecialPoints}/>
+        </>}
         {currentUnit && unit.Character.Name === currentUnit.Character.Name &&
         <rect x={14} y={0} width={68} height={20} fill={'none'} stroke={'rgb(1, 22, 39)'}/>}
-        <image className={'unit'} style={{
+        {unit.State !== UnitState.Runaway && <image style={{
             imageRendering: 'pixelated',
-            opacity: unit.State === UnitState.Runaway ? 0 : 1,
         }}
-               width={96} height={96} x={enemy && unit.State !== UnitState.Dead ? -96 : 0}
-               transform={(enemy ? 'scale(-1, 1)' : '')
-               + (unit.State === UnitState.Dead && enemy ? 'translate(-96, 0) rotate(-90, 48, 48)' : '')
-               + (unit.State === UnitState.Dead && !enemy ? 'rotate(-90, 48, 48)' : '')
-               }
-               xlinkHref={`Resources/Characters/${unit.Character.CharClass.Name}/char.png`}/>
+                width={96} height={96} x={enemy && unit.State !== UnitState.Dead ? -96 : 0}
+                transform={(enemy ? 'scale(-1, 1)' : '')
+                + (unit.State === UnitState.Dead && enemy ? 'translate(-96, 0) rotate(-90, 48, 48)' : '')
+                + (unit.State === UnitState.Dead && !enemy ? 'rotate(-90, 48, 48)' : '')
+                }
+                xlinkHref={`Resources/Characters/${unit.Character.CharClass.Name}/char.png`}/>}
+        {unit.State === UnitState.Runaway && <image width={96} height={96} xlinkHref={`Resources/Characters/retreated_character.png`}/>}
         <foreignObject y={50} x={0} width={120} height={120}>
             <p className={'hover-text'}>{unit.Character.Name}</p>
         </foreignObject>

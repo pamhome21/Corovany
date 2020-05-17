@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getSpells} from "../store/selectors";
+import {getCommands, getSpells} from "../store/selectors";
 import {ExecuteCommand} from "../store/actions";
 import {TextGameDisplay} from "../components/TextGameDisplay";
 import {GraphicalGameDisplay} from "../components/GraphicalGameDisplay";
@@ -8,6 +8,7 @@ import {GraphicalGameDisplay} from "../components/GraphicalGameDisplay";
 // Displays battle actions
 export function BattleView(props: any) {
     const spells = useSelector(getSpells);
+    const commands = useSelector(getCommands);
     const dispatch = useDispatch();
     const executeInitState = () => {
         dispatch(ExecuteCommand({
@@ -85,13 +86,13 @@ export function BattleView(props: any) {
             </div>
             <div style={{
                 height: '200px',
-                width: '100%',
-                overflowY: 'scroll',
+                width: '40vw',
+                overflow: 'scroll',
                 backgroundColor: 'rgb(235, 235, 235)'
             }}>
-            <p>Способности:</p>
+                <p>Команды:</p>
                 <div style={{marginLeft: '15px'}}>
-                    {spells.map((spell, i) => <pre key={i}>{spell}</pre>)}
+                    {commands.map((spell, i) => <pre key={i}>{spell}</pre>)}
                 </div>
             </div>
         </div>
