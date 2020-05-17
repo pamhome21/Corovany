@@ -42,10 +42,12 @@ namespace Corovany.Logic
             game.ReportInfo(new GameInitialized(game.Players
                 .SelectMany(player => player.Value.CurrentChars)
                 .ToList()));
-            if (game.CurrentUnit != null)
-            {
-                game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
-            }
+            if (game.CurrentUnit == null) return;
+            game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
+            if (NextTurnCommand.IsPlayerDead(game.Units))
+                game.ReportInfo(new BattleEnd(false));
+            if (NextTurnCommand.IsEnemyDead(game.Units))
+                game.ReportInfo(new BattleEnd(true));
         }
     }
 
@@ -163,13 +165,13 @@ namespace Corovany.Logic
             game.ReportInfo(new BattleFieldUpdated(game.CurrentUnit, game.Units, game.UnitTurnQueue));
         }
 
-        private bool IsPlayerDead(List<CombatCore.PlayerCombatUnit> units)
+        public static bool IsPlayerDead(List<CombatCore.PlayerCombatUnit> units)
         {
             return units.Count(unit => unit.Character.OwnerId != null
                                        && unit.State == CombatCore.UnitState.Fine) == 0;
         }
 
-        private bool IsEnemyDead(List<CombatCore.PlayerCombatUnit> units)
+        public static bool IsEnemyDead(List<CombatCore.PlayerCombatUnit> units)
         {
             return units.Count(unit => unit.Character.OwnerId == null
                                        && unit.State == CombatCore.UnitState.Fine) == 0;
