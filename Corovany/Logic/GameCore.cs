@@ -129,6 +129,17 @@ namespace Corovany.Logic
                 }
                 UnitCounter++;
             }
+            
+            public CombatCore.PlayerCombatUnit RandomUnitSelect()
+            {
+                var random = new Random();
+                var num = random.Next(0, 
+                    Players.FirstOrDefault().Value.CurrentChars
+                        .Count(unit => unit != null));
+                var character = Players.FirstOrDefault().Value.CurrentChars[num];
+                var unit = Units.First(u => u.Character == character);
+                return unit;
+            }
         }
         
         public class UnitComparer : IComparer<CombatCore.PlayerCombatUnit>

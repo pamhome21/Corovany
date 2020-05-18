@@ -195,6 +195,8 @@ namespace Corovany.Logic
             }
             game.ReportInfo(new FrontendSpellLog(game.CurrentUnit, 
                 game.AvailablePerks[PerkKey], game.AvailableTargets[TargetKey]));
+            if (game.CurrentUnit.Character.OwnerId == null)
+                game.RandomUnitSelect();
             game.FillQueueWithUnits();
             if (IsPlayerDead(game.Units))
             {
